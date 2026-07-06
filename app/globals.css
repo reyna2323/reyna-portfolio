@@ -1,26 +1,450 @@
 @import "tailwindcss";
 
+/* =====================================================================
+   THEME COLORS — EDIT HERE ✎
+   Reyna: tweak these hex values to retheme the whole site.
+
+   Two families exist on purpose:
+   • Raw palette (petal, paper, pink, plum, …) — decorative surfaces,
+     borders, glows, desk-object art.
+   • Text tokens (ink-*, glass-*, rose-ink, copper-ink, circuit) — the
+     ONLY colors body copy should use. Each is pre-checked for AA
+     contrast against the specific surface it's named for. If you add
+     a new panel surface, add a matching text token rather than reusing
+     an existing one at a new opacity — that's how the white-on-white
+     class of bug creeps back in.
+   ===================================================================== */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* -- decorative palette -- */
+  --petal: #fdf2f7; /* pearlescent white-pink */
+  --paper: #faf3e8; /* warm notebook paper */
+  --blush: #f6d3e3; /* soft pink */
+  --pink: #ec8fbd; /* main pink */
+  --hotpink: #e2559e; /* saturated accent / focus ring */
+  --lilac: #e6ddf5; /* pale purple */
+  --lavender: #c3a8e8; /* mid purple */
+  --orchid: #9a5cd0; /* strong purple */
+  --plum: #4a2a52; /* deep purple surface */
+  --deepplum: #1f0f27; /* night / scene background */
+  --rosegold: #e3a58b; /* metallic warm */
+  --copper: #b8703f; /* wires / coils / metal */
+  --led: #ff79c6; /* glowing LED pink */
+  --mintled: #7de8c2; /* the one green LED */
+  --folder: #e9c7a4; /* manila folder surface */
+  --folder-dark: #d9ac7c; /* folder shadow tone */
+
+  /* -- text tokens: on LIGHT paper / folder / casefile surfaces -- */
+  --ink-strong: #2a1830; /* headings */
+  --ink-soft: #4a3350; /* body copy */
+  --ink-muted: #5f4569; /* captions, labels, meta */
+  --rose-ink: #b52f76; /* accent links/labels on paper (AA-safe rose) */
+  --copper-ink: #7d4b2c; /* accent labels on paper (AA-safe copper) */
+
+  /* -- text tokens: on DARK glass / schematic surfaces -- */
+  --glass-strong: #fdf2f7; /* headings */
+  --glass-soft: #d9c8ea; /* body copy */
+  --glass-muted: #b3a0c4; /* captions, labels, meta */
+  --circuit: #7de8c2; /* schematic accent — labels/headings only, never body */
+
+  --background: var(--deepplum);
+  --foreground: var(--petal);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-petal: var(--petal);
+  --color-paper: var(--paper);
+  --color-blush: var(--blush);
+  --color-pink: var(--pink);
+  --color-hotpink: var(--hotpink);
+  --color-lilac: var(--lilac);
+  --color-lavender: var(--lavender);
+  --color-orchid: var(--orchid);
+  --color-plum: var(--plum);
+  --color-deepplum: var(--deepplum);
+  --color-rosegold: var(--rosegold);
+  --color-copper: var(--copper);
+  --color-led: var(--led);
+  --color-mintled: var(--mintled);
+  --color-folder: var(--folder);
+  --color-folder-dark: var(--folder-dark);
+
+  --color-ink-strong: var(--ink-strong);
+  --color-ink-soft: var(--ink-soft);
+  --color-ink-muted: var(--ink-muted);
+  --color-rose-ink: var(--rose-ink);
+  --color-copper-ink: var(--copper-ink);
+  --color-glass-strong: var(--glass-strong);
+  --color-glass-soft: var(--glass-soft);
+  --color-glass-muted: var(--glass-muted);
+  --color-circuit: var(--circuit);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-hand: var(--font-caveat);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  height: 100%;
+  overflow: hidden; /* the desk never scrolls — panels scroll internally */
+  overscroll-behavior: none;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
+}
+
+:focus-visible {
+  outline: 2px solid var(--hotpink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+::selection {
+  background: var(--pink);
+  color: var(--deepplum);
+}
+
+/* thin pretty scrollbars inside panels */
+.panel-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: var(--pink) transparent;
+}
+.panel-scroll::-webkit-scrollbar {
+  width: 6px;
+}
+.panel-scroll::-webkit-scrollbar-thumb {
+  background: var(--pink);
+  border-radius: 999px;
+}
+
+/* =====================================================================
+   TYPOGRAPHY SCALE — deliberate sizes, clamp()-bounded so nothing goes
+   illegibly small on a narrow-but-not-mobile desktop window, and
+   nothing goes comically large on an ultrawide. Use these instead of
+   ad hoc text-[Nvw] classes.
+   ===================================================================== */
+.text-display {
+  font-size: clamp(1.9rem, 1.35rem + 1.7vw, 2.75rem);
+  line-height: 1.05;
+}
+.text-hand-xl {
+  font-size: clamp(1.5rem, 1.2rem + 1vw, 2.1rem);
+  line-height: 1.1;
+}
+.text-hand-lg {
+  font-size: clamp(1.15rem, 1rem + 0.5vw, 1.5rem);
+  line-height: 1.15;
+}
+.text-hand-md {
+  font-size: clamp(1rem, 0.92rem + 0.3vw, 1.2rem);
+  line-height: 1.2;
+}
+.text-hand-sm {
+  font-size: clamp(0.85rem, 0.8rem + 0.2vw, 1rem);
+  line-height: 1.25;
+}
+.text-desk-label {
+  font-size: clamp(0.72rem, 0.66rem + 0.35vw, 0.95rem);
+  line-height: 1.3;
+}
+.text-desk-micro {
+  font-size: clamp(0.55rem, 0.5rem + 0.2vw, 0.68rem);
+  line-height: 1.3;
+}
+.text-entrance-mark {
+  font-size: clamp(3.5rem, 2.5rem + 5vw, 8rem);
+}
+
+/* ------------------------------------------------- textures (pure CSS/SVG) */
+
+.graph-paper {
+  background-image:
+    linear-gradient(rgba(154, 92, 208, 0.12) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(154, 92, 208, 0.12) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+.ruled-lines {
+  background-image: repeating-linear-gradient(
+    transparent,
+    transparent 27px,
+    rgba(154, 92, 208, 0.18) 27px,
+    rgba(154, 92, 208, 0.18) 28px
+  );
+}
+
+.vignette {
+  box-shadow: inset 0 0 18vw rgba(0, 0, 0, 0.55);
+}
+
+/* ----------------------------------------------------- keyframe library */
+
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-7px);
+  }
+}
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.02);
+  }
+}
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-1.4deg);
+  }
+  50% {
+    transform: rotate(1.6deg);
+  }
+}
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+@keyframes led-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -140;
+  }
+}
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-160%) skewX(-16deg);
+  }
+  60%,
+  100% {
+    transform: translateX(260%) skewX(-16deg);
+  }
+}
+@keyframes bokeh-drift {
+  0% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.28;
+  }
+  50% {
+    transform: translate(24px, -36px) scale(1.15);
+    opacity: 0.55;
+  }
+  100% {
+    transform: translate(-14px, -70px) scale(0.95);
+    opacity: 0;
+  }
+}
+@keyframes scope-scroll {
+  to {
+    transform: translateX(-160px);
+  }
+}
+
+.anim-float {
+  animation: float-y 5.5s ease-in-out infinite;
+}
+.anim-breathe {
+  animation: breathe 6s ease-in-out infinite;
+}
+.anim-sway {
+  animation: sway 4.5s ease-in-out infinite;
+  transform-origin: top center;
+}
+.anim-blink {
+  animation: blink 1.1s steps(1) infinite;
+}
+.anim-led {
+  animation: led-pulse 2.4s ease-in-out infinite;
+}
+.anim-dash {
+  animation: dash-flow 3.5s linear infinite;
+}
+.anim-scope {
+  animation: scope-scroll 4s linear infinite;
+}
+.anim-bokeh {
+  animation: bokeh-drift 14s ease-in-out infinite;
+}
+
+@keyframes sparkle {
+  0%, 100% { transform: scale(0) rotate(0deg); opacity: 0; }
+  45%, 55% { transform: scale(1) rotate(180deg); opacity: 0.9; }
+}
+@keyframes twinkle {
+  0%, 100% { opacity: 0.06; transform: scale(0.5); }
+  50% { opacity: 0.82; transform: scale(1.3); }
+}
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.55; }
+  50% { opacity: 1; }
+}
+@keyframes rotate-slow {
+  to { transform: rotate(360deg); }
+}
+@keyframes rise-fade {
+  0% { transform: translateY(0) scale(1); opacity: 0.65; }
+  100% { transform: translateY(-30px) scale(0.6); opacity: 0; }
+}
+@keyframes wander {
+  0%   { transform: translate(0, 0); }
+  25%  { transform: translate(7px, -5px); }
+  50%  { transform: translate(-3px, -11px); }
+  75%  { transform: translate(-9px, -3px); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes depth-bob {
+  0%, 100% { transform: translateY(0) translateZ(0); }
+  50% { transform: translateY(-5px) translateZ(8px); }
+}
+@keyframes dust-drift {
+  0% { transform: translate(0, 0); opacity: 0; }
+  10% { opacity: 0.5; }
+  90% { opacity: 0.4; }
+  100% { transform: translate(var(--dust-x, 14px), -46px); opacity: 0; }
+}
+@keyframes shooting-star {
+  0%, 96%, 100% { opacity: 0; transform: translate(0, 0) scale(1); }
+  97% { opacity: 1; }
+  99% { opacity: 0.9; transform: translate(-120px, 70px) scale(0.4); }
+}
+@keyframes paper-flutter {
+  0%, 100% { transform: rotate(0deg) translateY(0); }
+  50% { transform: rotate(-0.6deg) translateY(-1px); }
+}
+@keyframes tag-swing {
+  0%, 100% { transform: rotate(-2.5deg); }
+  50% { transform: rotate(2.5deg); }
+}
+@keyframes flicker-blink {
+  0%, 100%, 40% { opacity: 1; }
+  42%, 44% { opacity: 0.25; }
+}
+@keyframes ring-pulse {
+  0% { transform: scale(0.85); opacity: 0.55; }
+  100% { transform: scale(1.9); opacity: 0; }
+}
+
+.anim-dust {
+  animation: dust-drift 9s ease-in-out infinite;
+}
+.anim-shooting-star {
+  animation: shooting-star 16s ease-in infinite;
+}
+.anim-paper-flutter {
+  animation: paper-flutter 7s ease-in-out infinite;
+}
+.anim-tag-swing {
+  animation: tag-swing 5s ease-in-out infinite;
+  transform-origin: top center;
+}
+.anim-flicker {
+  animation: flicker-blink 6s ease-in-out infinite;
+}
+.anim-ring-pulse {
+  animation: ring-pulse 3.2s ease-out infinite;
+}
+
+.anim-sparkle {
+  animation: sparkle 4s ease-in-out infinite;
+}
+.anim-twinkle {
+  animation: twinkle 3.5s ease-in-out infinite;
+}
+.anim-pulse-glow {
+  animation: pulse-glow 2.5s ease-in-out infinite;
+}
+.anim-rotate-slow {
+  animation: rotate-slow 24s linear infinite;
+}
+.anim-rise-fade {
+  animation: rise-fade 5s ease-out infinite;
+}
+.anim-wander {
+  animation: wander 9s ease-in-out infinite;
+}
+.anim-depth-bob {
+  animation: depth-bob 6s ease-in-out infinite;
+}
+
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::before {
+  content: "";
+  position: absolute;
+  inset: -20% auto -20% 0;
+  width: 34%;
+  background: linear-gradient(
+    105deg,
+    transparent,
+    rgba(255, 255, 255, 0.35),
+    transparent
+  );
+  animation: shimmer-sweep 7s ease-in-out infinite;
+  pointer-events: none;
+}
+
+/* calm everything down for reduced-motion users */
+@media (prefers-reduced-motion: reduce) {
+  .anim-float,
+  .anim-breathe,
+  .anim-sway,
+  .anim-led,
+  .anim-dash,
+  .anim-scope,
+  .anim-bokeh,
+  .anim-sparkle,
+  .anim-twinkle,
+  .anim-pulse-glow,
+  .anim-rotate-slow,
+  .anim-rise-fade,
+  .anim-wander,
+  .anim-depth-bob,
+  .anim-dust,
+  .anim-shooting-star,
+  .anim-paper-flutter,
+  .anim-tag-swing,
+  .anim-flicker,
+  .anim-ring-pulse {
+    animation: none;
+  }
+  .shimmer::before {
+    animation: none;
+    opacity: 0;
+  }
 }

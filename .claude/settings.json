@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx -y playwright@1.48 install chromium)"
+    ]
+  }
+}
