@@ -1,13 +1,27 @@
-/** A USC cardinal-red coffee mug with gold lettering and rising steam. */
-export function USCMugArt() {
+/** A USC cardinal-red coffee mug with gold lettering and rising steam.
+ *  `excited` briefly adds extra steam + a sparkle burst — a reward for
+ *  visitors curious enough to click a mug that looks purely decorative. */
+export function USCMugArt({ excited = false }: { excited?: boolean }) {
   return (
     <div className="relative aspect-[2/2.7] w-full">
       <div className="absolute inset-x-2 -bottom-0.5 h-3 rounded-[50%] bg-black/40 blur-md" />
-      <svg viewBox="0 0 60 80" className="h-full w-full drop-shadow-[0_8px_18px_rgba(0,0,0,0.45)]" aria-hidden>
+      <svg
+        viewBox="0 0 60 80"
+        className="h-full w-full drop-shadow-[0_8px_18px_rgba(0,0,0,0.45)]"
+        style={{ overflow: "visible" }}
+        aria-hidden
+      >
         {/* rising steam wisps */}
         <path d="M22 24 Q24 14 22 7" fill="none" stroke="rgba(255,255,255,0.32)" strokeWidth="2.2" strokeLinecap="round" className="anim-rise-fade" style={{ animationDelay: "0.1s" }} />
         <path d="M30 22 Q32 12 30 5" fill="none" stroke="rgba(255,255,255,0.26)" strokeWidth="2" strokeLinecap="round" className="anim-rise-fade" style={{ animationDelay: "0.75s" }} />
         <path d="M38 24 Q40 14 38 7" fill="none" stroke="rgba(255,255,255,0.32)" strokeWidth="2.2" strokeLinecap="round" className="anim-rise-fade" style={{ animationDelay: "0.42s" }} />
+        {excited && (
+          <>
+            <path d="M18 24 Q14 12 20 3" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" className="anim-rise-fade" style={{ animationDuration: "1.6s" }} />
+            <path d="M42 24 Q46 12 40 3" fill="none" stroke="rgba(255,255,255,0.4)" strokeWidth="2" strokeLinecap="round" className="anim-rise-fade" style={{ animationDuration: "1.6s", animationDelay: "0.3s" }} />
+            <text x="30" y="-2" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="9" fill="var(--led)" className="anim-rise-fade" style={{ animationDuration: "1.4s" }}>✦ still warm ✦</text>
+          </>
+        )}
 
         {/* mug body */}
         <path d="M10 28 Q9 64 10 70 H50 Q51 64 50 28 Z" fill="#9b1b30" />

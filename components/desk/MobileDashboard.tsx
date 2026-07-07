@@ -35,7 +35,7 @@ const SHEET_BG: Record<PanelVariant, string> = {
   folder: "bg-gradient-to-b from-folder to-folder-dark",
   window: "bg-gradient-to-b from-[#2a1830] to-[#1f0f27]",
   schematic: "bg-[#150c1c]",
-  casefile: "bg-gradient-to-b from-paper to-blush/50 ruled-lines",
+  casefile: "bg-gradient-to-b from-paper to-blush ruled-lines",
 };
 
 const SHEET_DARK: Record<PanelVariant, boolean> = {

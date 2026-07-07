@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { motion, useReducedMotion } from "framer-motion";
 
 interface DeskObjectProps {
@@ -12,7 +13,8 @@ interface DeskObjectProps {
 }
 
 /** Accessible clickable desk object: button semantics, hover lift + glow,
- *  handwritten tooltip revealed on hover/keyboard focus. */
+ *  handwritten tooltip revealed on hover/keyboard focus, and a one-shot
+ *  ring pulse on click so opening a panel feels like it landed. */
 export function DeskObject({
   label,
   ariaLabel,
@@ -22,10 +24,14 @@ export function DeskObject({
   children,
 }: DeskObjectProps) {
   const reduced = useReducedMotion();
+  const [rippleKey, setRippleKey] = useState(0);
   return (
     <motion.button
       type="button"
-      onClick={onOpen}
+      onClick={() => {
+        if (!reduced) setRippleKey((k) => k + 1);
+        onOpen();
+      }}
       aria-label={ariaLabel}
       className="group relative block w-full cursor-pointer text-left"
       whileHover={reduced ? undefined : { y: -9, scale: 1.045, rotate: tilt }}
@@ -35,6 +41,14 @@ export function DeskObject({
       <div className="transition-[filter] duration-300 group-hover:drop-shadow-[0_14px_34px_rgba(239,156,196,0.5)] group-focus-visible:drop-shadow-[0_14px_34px_rgba(239,156,196,0.5)]">
         {children}
       </div>
+      {rippleKey > 0 && (
+        <span
+          key={rippleKey}
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-1/2 h-10 w-10 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-hotpink/70"
+          style={{ animation: "ring-pulse 0.6s ease-out" }}
+        />
+      )}
       <span
         aria-hidden
         className={`pointer-events-none absolute left-1/2 z-20 -translate-x-1/2 whitespace-nowrap font-hand text-hand-md text-glass-strong opacity-0 transition-all duration-300 group-hover:opacity-100 group-focus-visible:opacity-100 ${

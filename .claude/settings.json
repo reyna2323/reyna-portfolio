@@ -2,7 +2,11 @@
   "permissions": {
     "allow": [
       "Bash(npx -y playwright@1.48 install chromium)",
-      "Bash(node shot.js)"
+      "Bash(node shot.js)",
+      "Bash(node diagnose.js)",
+      "Bash(node notebook_crop.js)",
+      "Bash(node nb_zoom.js)",
+      "Bash(node nb_zoom3.js)"
     ]
   }
 }

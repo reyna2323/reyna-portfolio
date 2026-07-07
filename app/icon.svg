@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <defs>
+    <radialGradient id="seal" cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#f0699f" />
+      <stop offset="55%" stop-color="#e2559e" />
+      <stop offset="100%" stop-color="#b52f76" />
+    </radialGradient>
+  </defs>
+
+  <!-- wax-seal disc, matching the ContactCard envelope seal elsewhere on the site -->
+  <circle cx="32" cy="32" r="30" fill="url(#seal)" />
+  <circle cx="32" cy="32" r="30" fill="none" stroke="#fdf2f7" stroke-width="1.4" opacity="0.55" />
+  <circle cx="32" cy="32" r="25.5" fill="none" stroke="#fdf2f7" stroke-width="0.8" opacity="0.35" stroke-dasharray="1.6 2.4" />
+
+  <!-- pressed monogram -->
+  <text
+    x="32.5"
+    y="43"
+    text-anchor="middle"
+    font-family="Georgia, 'Times New Roman', serif"
+    font-size="30"
+    font-weight="700"
+    fill="#fdf2f7"
+    opacity="0.96"
+  >RP</text>
+
+  <!-- tiny solder-point accent, top right, echoing the desk's LED dots -->
+  <circle cx="47" cy="17" r="2.6" fill="#fdf2f7" opacity="0.85" />
+</svg>

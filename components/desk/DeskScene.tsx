@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { motion } from "framer-motion";
 import type { SectionId } from "@/lib/content";
 import { sections } from "@/lib/content";
@@ -36,6 +37,15 @@ function label(id: SectionId) {
 }
 
 export function DeskScene({ onOpen }: { onOpen: (id: SectionId) => void }) {
+  const [mugExcited, setMugExcited] = useState(false);
+  const mugTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const pokeMug = () => {
+    setMugExcited(true);
+    if (mugTimeout.current) clearTimeout(mugTimeout.current);
+    mugTimeout.current = setTimeout(() => setMugExcited(false), 1500);
+  };
+
   return (
     <ParallaxProvider className="relative h-full w-full overflow-hidden bg-gradient-to-br from-deepplum via-[#301c3a] to-plum">
       <Atmosphere />
@@ -52,17 +62,26 @@ export function DeskScene({ onOpen }: { onOpen: (id: SectionId) => void }) {
         </ParallaxLayer>
       </div>
 
-      {/* USC coffee mug — cold by now, kept anyway, tucked beside the breadboard */}
-      <div className="pointer-events-none absolute left-[6%] top-[63%] z-0 w-[6.5vw] max-w-[84px]">
+      {/* USC coffee mug — cold by now, kept anyway, tucked at the far edge
+          beside the laptop. Quietly clickable: a small reward for anyone
+          curious enough to poke at something that looks purely decorative. */}
+      <div className="absolute left-[0.5%] top-[68%] z-0 w-[6vw] max-w-[78px]">
         <ParallaxLayer depth={1}>
           <div className="anim-float" style={{ animationDelay: "2s" }}>
-            <USCMugArt />
+            <button
+              type="button"
+              onClick={pokeMug}
+              aria-label="It's just a mug. Or is it?"
+              className="block cursor-pointer transition-transform hover:scale-105 active:scale-95"
+            >
+              <USCMugArt excited={mugExcited} />
+            </button>
           </div>
         </ParallaxLayer>
       </div>
 
       {/* tiny orrery paperweight, an old gift, orbiting quietly between the shelf and the case file */}
-      <div className="pointer-events-none absolute right-[9%] top-[63%] z-0 w-[6.5vw] max-w-[84px]">
+      <div className="pointer-events-none absolute right-[9%] top-[59%] z-0 w-[6.5vw] max-w-[84px]">
         <ParallaxLayer depth={1.2}>
           <div className="anim-float" style={{ animationDelay: "0.6s" }}>
             <OrreryArt />
@@ -156,7 +175,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: SectionId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute bottom-[8%] left-[8%] z-10 w-[22vw] max-w-[320px]"
+        className="absolute bottom-[10%] left-[8%] z-10 w-[22vw] max-w-[320px]"
       >
         <ParallaxLayer depth={1.2}>
           <div className="anim-float" style={{ animationDelay: "0.3s" }}>
@@ -168,14 +187,15 @@ export function DeskScene({ onOpen }: { onOpen: (id: SectionId) => void }) {
       </motion.div>
 
       {/* Sticky notes — Teaching
-          Moved to bottom-[6%] and shifted left so it clears the notebook edge.
-          labelBelow keeps the hover text from floating up onto the notebook. */}
+          bottom-[11%] keeps the stack clear of the dock below and the
+          notebook's bottom-right corner above; verified against real
+          bounding boxes, not just eyeballed percentages. */}
       <motion.div
         custom={5}
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute bottom-[6%] left-[34%] z-10 w-[10vw] max-w-[130px]"
+        className="absolute bottom-[11%] left-[34%] z-10 w-[10vw] max-w-[130px]"
       >
         <ParallaxLayer depth={1.8}>
           <DeskObject label={label("teaching")} ariaLabel="Open Teaching and Leadership section" onOpen={() => onOpen("teaching")} tilt={5}>
@@ -191,7 +211,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: SectionId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute bottom-[8%] right-[24%] z-10 w-[15vw] max-w-[200px]"
+        className="absolute bottom-[10%] right-[24%] z-10 w-[15vw] max-w-[200px]"
       >
         <ParallaxLayer depth={1.3}>
           <div className="anim-float" style={{ animationDelay: "0.9s" }}>
@@ -202,17 +222,20 @@ export function DeskScene({ onOpen }: { onOpen: (id: SectionId) => void }) {
         </ParallaxLayer>
       </motion.div>
 
-      {/* Contact card — bottom right */}
+      {/* Contact card — bottom right.
+          labelBelow was dropped here: with the dock's real footprint measured,
+          a below-object tooltip landed underneath the dock's higher z-index
+          and got clipped. Label-above has clear space above it instead. */}
       <motion.div
         custom={7}
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute bottom-[8%] right-[5%] z-10 w-[14vw] max-w-[180px]"
+        className="absolute bottom-[10%] right-[5%] z-10 w-[14vw] max-w-[180px]"
       >
         <ParallaxLayer depth={1.7}>
           <div className="anim-float" style={{ animationDelay: "1.6s" }}>
-            <DeskObject label={label("contact")} ariaLabel="Open Contact section" onOpen={() => onOpen("contact")} tilt={3} labelBelow>
+            <DeskObject label={label("contact")} ariaLabel="Open Contact section" onOpen={() => onOpen("contact")} tilt={3}>
               <ContactCardArt />
             </DeskObject>
           </div>

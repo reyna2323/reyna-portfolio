@@ -25,7 +25,7 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "Reyna Patel · Engineer's Notebook",
+  title: "Reyna Patel's Website",
   description:
     "Reyna Patel builds complete systems: hardware, embedded, full-stack software, and machine learning. USC Computer Engineering & Computer Science. Explore her interactive engineering workbench.",
 };

@@ -80,6 +80,39 @@ export function NotebookArt() {
             </svg>
           </div>
 
+          {/* exoplanet transit light curve sketch — drawn BEHIND the main content
+              column (same trick as the op-amp sketch above) so its faint lines
+              and caption never compete with the real "currently" text on top. */}
+          <div className="pointer-events-none absolute left-[3%] top-[46%] w-[28%]" style={{ opacity: 0.32 }}>
+            <svg viewBox="0 0 66 42" className="w-full" aria-hidden>
+              <line x1="5" y1="3" x2="5" y2="33" stroke="var(--copper-ink)" strokeWidth="0.9" />
+              <line x1="5" y1="33" x2="61" y2="33" stroke="var(--copper-ink)" strokeWidth="0.9" />
+              <path d="M5 13 H18 Q20 13 22 19 Q25 26 31 26 Q37 26 40 19 Q42 13 44 13 H61"
+                fill="none" stroke="var(--lavender)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M18 13 Q20 13 22 19 Q25 26 31 26 Q37 26 40 19 Q42 13 44 13 L44 33 H18 Z"
+                fill="rgba(155,27,48,0.05)" />
+              <text x="33" y="40" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--ink-muted)">exoplanet transit</text>
+              <text x="3" y="20" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--ink-muted)" transform="rotate(-90 3 20)">flux</text>
+            </svg>
+          </div>
+
+          {/* I²C timing sketch — drawn BEHIND the main content column, same
+              trick as the other margin sketches, since the checklist
+              reference item and the currently-list both run through here */}
+          <div className="pointer-events-none absolute left-[27%] top-[67%] w-[20%]" style={{ opacity: 0.3 }}>
+            <svg viewBox="0 0 58 30" className="w-full" aria-hidden>
+              <text x="0" y="6.5" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--copper-ink)">SCL</text>
+              <text x="0" y="20.5" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--orchid)">SDA</text>
+              <path d="M12 3 H16 V8 H21 V3 H26 V8 H31 V3 H36 V8 H41 V3 H46 V8 H51 V3 H57"
+                fill="none" stroke="var(--copper-ink)" strokeWidth="0.9" strokeLinecap="square" />
+              <path d="M12 17 H15 V22 H20 V17 H27 V22 H32 V17 H36 V22 H42 V17 H47 V22 H51 V17 H57"
+                fill="none" stroke="var(--orchid)" strokeWidth="0.9" strokeLinecap="square" />
+              <line x1="12" y1="3" x2="12" y2="22" stroke="var(--rose-ink)" strokeWidth="0.65" strokeDasharray="1.5 1" />
+              <text x="12" y="27.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="4" fill="var(--rose-ink)">S</text>
+              <text x="38" y="28" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--ink-muted)">I²C · 0x68</text>
+            </svg>
+          </div>
+
           {/* warm highlight strip behind name */}
           <div
             className="pointer-events-none absolute"
@@ -102,20 +135,22 @@ export function NotebookArt() {
                 engineering notebook · vol. 02
               </p>
               {/* academic credentials */}
-              <div className="mt-[3.5%] space-y-[0.5%] border-l-2 border-orchid/28 pl-[4%]">
+              <div className="mt-[3.5%] max-w-[58%] space-y-[0.5%] border-l-2 border-orchid/28 pl-[4%]">
                 <p className="font-hand text-hand-sm text-ink-muted">University of Southern California</p>
-                <p className="font-hand text-desk-label leading-tight text-ink-muted">B.S. Computer Engineering &amp; Computer Science</p>
+                <p className="font-hand text-desk-label leading-tight text-ink-muted">B.S. Computer Engineering</p>
+                <p className="font-hand text-desk-label leading-tight text-ink-muted">&amp; Computer Science</p>
                 <p className="font-hand text-desk-label text-ink-muted">Minor in Mathematics</p>
                 <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.50 }}>└ yes, all three ✓</p>
               </div>
             </div>
 
-            {/* currently section */}
-            <div className="space-y-[1.5%]">
+            {/* currently section — capped width so long lines never reach the polaroid margin */}
+            <div className="max-w-[62%] space-y-[1.5%]">
               <p className="font-hand text-desk-label text-rose-ink" style={{ opacity: 0.78 }}>currently →</p>
               <p className="font-hand text-desk-micro text-ink-muted">· SAR robot + stress trajectory ML</p>
               <p className="font-hand text-desk-micro text-ink-muted">· exoplanet paper draft v2</p>
               <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.58 }}>· this portfolio (meta, I know)</p>
+              <p className="font-hand text-desk-micro text-ink-muted line-through" style={{ opacity: 0.42 }}>· do it all in assembly <span className="text-copper-ink no-underline">(so much no)</span></p>
             </div>
 
             {/* circuit-heartbeat with a PROPER heart shape */}
@@ -192,40 +227,6 @@ export function NotebookArt() {
             </p>
           </div>
 
-          {/* exoplanet transit light curve sketch */}
-          <div className="pointer-events-none absolute left-[3%] top-[46%] w-[28%]" style={{ opacity: 0.40 }}>
-            <svg viewBox="0 0 66 42" className="w-full" aria-hidden>
-              <line x1="5" y1="3" x2="5" y2="33" stroke="var(--copper-ink)" strokeWidth="0.9" />
-              <line x1="5" y1="33" x2="61" y2="33" stroke="var(--copper-ink)" strokeWidth="0.9" />
-              <path d="M5 13 H18 Q20 13 22 19 Q25 26 31 26 Q37 26 40 19 Q42 13 44 13 H61"
-                fill="none" stroke="var(--lavender)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M18 13 Q20 13 22 19 Q25 26 31 26 Q37 26 40 19 Q42 13 44 13 L44 33 H18 Z"
-                fill="rgba(155,27,48,0.05)" />
-              <text x="33" y="40" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--ink-muted)">exoplanet transit</text>
-              <text x="3" y="20" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--ink-muted)" transform="rotate(-90 3 20)">flux</text>
-            </svg>
-          </div>
-
-          {/* I²C timing sketch — references 0x68 from lab notes checklist */}
-          <div className="pointer-events-none absolute left-[27%] top-[67%] w-[20%]" style={{ opacity: 0.46 }}>
-            <svg viewBox="0 0 58 30" className="w-full" aria-hidden>
-              {/* channel labels */}
-              <text x="0" y="6.5" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--copper-ink)">SCL</text>
-              <text x="0" y="20.5" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--orchid)">SDA</text>
-              {/* SCL clock — square wave */}
-              <path d="M12 3 H16 V8 H21 V3 H26 V8 H31 V3 H36 V8 H41 V3 H46 V8 H51 V3 H57"
-                fill="none" stroke="var(--copper-ink)" strokeWidth="0.9" strokeLinecap="square" />
-              {/* SDA data bits */}
-              <path d="M12 17 H15 V22 H20 V17 H27 V22 H32 V17 H36 V22 H42 V17 H47 V22 H51 V17 H57"
-                fill="none" stroke="var(--orchid)" strokeWidth="0.9" strokeLinecap="square" />
-              {/* START condition marker */}
-              <line x1="12" y1="3" x2="12" y2="22" stroke="var(--rose-ink)" strokeWidth="0.65" strokeDasharray="1.5 1" />
-              <text x="12" y="27.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="4" fill="var(--rose-ink)">S</text>
-              {/* caption */}
-              <text x="38" y="28" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--ink-muted)">I²C · 0x68</text>
-            </svg>
-          </div>
-
           {/* ── Astronomy Polaroid — taped over the page ── */}
           <div className="anim-paper-flutter pointer-events-none absolute right-[3%] top-[29%] w-[26%] rotate-[6deg]">
             {/* tape strip */}
@@ -299,6 +300,34 @@ export function NotebookArt() {
             </svg>
           </div>
 
+          {/* lily of the valley — a small pressed-flower sketch tucked in the
+              one genuinely open gap on this page (between the Euler box and
+              the constellation), swaying very slightly like a real pressed
+              stem catching a draft. */}
+          <div className="anim-sway pointer-events-none absolute right-[4%] top-[69%] w-[16%]" style={{ opacity: 0.75, transformOrigin: "bottom center" }}>
+            <svg viewBox="0 0 50 50" className="w-full" aria-hidden>
+              {/* leaves */}
+              <path d="M22 38 Q10 30 14 16 Q20 26 24 38 Z" fill="rgba(125,232,194,0.14)" stroke="var(--mintled)" strokeWidth="0.9" />
+              <path d="M28 38 Q38 28 32 14 Q28 25 26 38 Z" fill="rgba(125,232,194,0.14)" stroke="var(--mintled)" strokeWidth="0.9" />
+              {/* stem */}
+              <path d="M25 38 Q23 24 27 8" fill="none" stroke="var(--mintled)" strokeWidth="1" />
+              {/* nodding bells, each a tiny scalloped cup */}
+              {[
+                [27.6, 10],
+                [26.8, 15.5],
+                [27.9, 21],
+                [26.6, 26.5],
+              ].map(([cx, cy], i) => (
+                <g key={i} transform={`translate(${cx} ${cy})`}>
+                  <path d="M-3 0 Q-3 4 0 4.5 Q3 4 3 0 Z" fill="var(--petal)" stroke="var(--ink-muted)" strokeWidth="0.6" opacity="0.9" />
+                  <path d="M-2 0.5 Q0 1.6 2 0.5" fill="none" stroke="var(--ink-muted)" strokeWidth="0.4" opacity="0.5" />
+                </g>
+              ))}
+              <text x="25" y="9" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--ink-muted)" opacity="0.7">✦</text>
+              <text x="25" y="47" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="4.8" fill="var(--ink-muted)">lily of the valley</text>
+            </svg>
+          </div>
+
           {/* sparkle */}
           <span
             className="pointer-events-none absolute text-orchid anim-sparkle"
@@ -311,6 +340,17 @@ export function NotebookArt() {
         <div className="ruled-lines shimmer relative w-1/2 rounded-r-xl rounded-l-sm border border-pink/30 bg-paper shadow-[inset_14px_0_24px_-16px_rgba(64,40,74,0.35)]">
           {/* washi tape corner */}
           <div className="absolute -right-2 -top-2 h-[9%] w-[26%] rotate-[8deg] rounded-sm bg-lavender/70 shadow-sm" />
+
+          {/* page corner that lifts slightly on hover, like it's about to turn */}
+          <div
+            className="pointer-events-none absolute bottom-0 right-0 h-[9%] w-[9%] origin-bottom-right transition-transform duration-500 ease-out group-hover:-translate-y-1 group-hover:-translate-x-1 group-hover:rotate-[-8deg]"
+            style={{
+              background: "linear-gradient(315deg, rgba(255,255,255,0.65), rgba(255,255,255,0) 65%)",
+              clipPath: "polygon(100% 100%, 0 100%, 100% 0)",
+              borderRadius: "0 0 4px 0",
+            }}
+            aria-hidden
+          />
 
           <p className="pointer-events-none absolute right-[5%] top-[2%] font-hand text-desk-micro text-ink-muted" style={{ opacity: 0.38 }}>pg. 47</p>
 
@@ -325,11 +365,45 @@ export function NotebookArt() {
             style={{ left: "0.5%", top: "13%", fontSize: "max(4px, 0.3vw)", opacity: 0.26, writingMode: "vertical-rl", transform: "rotate(180deg)", letterSpacing: "0.1em" }}
             aria-hidden
           >· lab notes ·</p>
+
+          {/* tiny margin joke — the one sliver of open space beside the heading */}
+          <p
+            className="pointer-events-none absolute rotate-[3deg] font-hand text-ink-muted"
+            style={{ left: "62%", top: "8%", width: "15%", fontSize: "max(4.5px, 0.34vw)", lineHeight: 1.2, opacity: 0.55 }}
+            aria-hidden
+          >
+            ideas &gt; sleep
+          </p>
           {/* sticky tab */}
           <div
             className="pointer-events-none absolute -right-px rounded-r-sm"
             style={{ top: "30%", width: "3.5%", height: "7%", background: "rgba(246,211,227,0.85)", borderTop: "1px solid rgba(236,100,140,0.3)", borderRight: "1px solid rgba(236,100,140,0.25)", borderBottom: "1px solid rgba(236,100,140,0.3)" }}
           />
+
+          {/* mini telescope + Saturn sketches — drawn BEHIND the checklist
+              (same trick as the left page's op-amp doodle) since the
+              checklist's last two lines run right through this vertical
+              band; opaque checkbox glyphs stay legible on top either way. */}
+          <div className="pointer-events-none absolute right-[3%] top-[38%] w-[20%]" style={{ opacity: 0.34 }}>
+            <svg viewBox="0 0 48 38" className="w-full" aria-hidden>
+              <rect x="5" y="13" width="28" height="10" rx="2.5" fill="none" stroke="var(--copper-ink)" strokeWidth="1.6" />
+              <rect x="31" y="15" width="10" height="6" rx="1.5" fill="var(--copper-ink)" opacity="0.62" />
+              <rect x="2" y="10" width="6" height="14" rx="2" fill="none" stroke="var(--copper-ink)" strokeWidth="1.6" />
+              <line x1="12" y1="23" x2="8" y2="34" stroke="var(--ink-muted)" strokeWidth="1.3" />
+              <line x1="22" y1="23" x2="22" y2="34" stroke="var(--ink-muted)" strokeWidth="1.3" />
+              <line x1="32" y1="23" x2="36" y2="34" stroke="var(--ink-muted)" strokeWidth="1.3" />
+              <circle cx="10" cy="10" r="1.2" fill="var(--lavender)" className="anim-twinkle" style={{ animationDelay: "0.7s" }} />
+              <circle cx="17" cy="7" r="0.9" fill="var(--lavender)" className="anim-twinkle" style={{ animationDelay: "1.5s" }} />
+            </svg>
+          </div>
+          <div className="pointer-events-none absolute left-[4%] top-[40%] w-[18%]" style={{ opacity: 0.3 }}>
+            <svg viewBox="0 0 44 28" className="w-full" aria-hidden>
+              <circle cx="22" cy="14" r="7" fill="none" stroke="var(--copper-ink)" strokeWidth="1.3" />
+              <ellipse cx="22" cy="14" rx="15" ry="4.5" fill="none" stroke="var(--copper-ink)" strokeWidth="1" />
+              <circle cx="40" cy="7" r="2" fill="none" stroke="var(--lavender)" strokeWidth="0.9" className="anim-twinkle" style={{ animationDelay: "0.5s" }} />
+              <text x="22" y="26" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--ink-muted)">Saturn?</text>
+            </svg>
+          </div>
 
           <div className="flex h-full flex-col p-[6%] pt-[8%]">
             <p className="font-hand text-hand-lg text-ink-strong">lab notes ✎</p>
@@ -382,6 +456,52 @@ export function NotebookArt() {
               </p>
             </div>
 
+            {/* three concept diagrams, laid out as real flow content (not
+                absolute guesses) so they can never collide with the text
+                above or the footer row below, no matter how tall this
+                page's content runs. */}
+            <div className="mt-[3%] mb-[3%] grid grid-cols-3 items-end gap-x-[3%]">
+              <div style={{ opacity: 0.6 }}>
+                <svg viewBox="0 0 82 32" className="w-full" aria-hidden>
+                  <rect x="0" y="8" width="18" height="11" rx="2" fill="none" stroke="var(--copper-ink)" strokeWidth="1" />
+                  <text x="9" y="16.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--copper-ink)">HRV</text>
+                  <line x1="18" y1="13.5" x2="23" y2="13.5" stroke="var(--ink-muted)" strokeWidth="0.9" />
+                  <path d="M21 11.5 L23 13.5 L21 15.5" fill="none" stroke="var(--ink-muted)" strokeWidth="0.9" />
+                  <rect x="23" y="8" width="20" height="11" rx="2" fill="none" stroke="var(--orchid)" strokeWidth="1" />
+                  <text x="33" y="16.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--orchid)">model</text>
+                  <line x1="43" y1="13.5" x2="48" y2="13.5" stroke="var(--ink-muted)" strokeWidth="0.9" />
+                  <path d="M46 11.5 L48 13.5 L46 15.5" fill="none" stroke="var(--ink-muted)" strokeWidth="0.9" />
+                  <rect x="48" y="8" width="24" height="11" rx="2" fill="none" stroke="var(--hotpink)" strokeWidth="1" />
+                  <text x="60" y="16.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--hotpink)">predict</text>
+                  <text x="41" y="30" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--ink-muted)">stress trajectory</text>
+                </svg>
+              </div>
+              <div style={{ opacity: 0.55 }}>
+                <svg viewBox="0 0 52 34" className="w-full" aria-hidden>
+                  <line x1="6" y1="2" x2="6" y2="26" stroke="var(--ink-muted)" strokeWidth="0.9" />
+                  <line x1="6" y1="26" x2="50" y2="26" stroke="var(--ink-muted)" strokeWidth="0.9" />
+                  <path d="M6 3 Q12 5 18 10 Q28 18 38 23 Q44 25 50 25.5"
+                    fill="none" stroke="var(--rose-ink)" strokeWidth="1.4" strokeLinecap="round" />
+                  <path d="M6 25.5 Q12 24 18 20 Q28 13 38 7 Q44 5 50 4"
+                    fill="none" stroke="var(--orchid)" strokeWidth="1.4" strokeLinecap="round" />
+                  <text x="8" y="9" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--rose-ink)">loss↓</text>
+                  <text x="8" y="18" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--orchid)">acc↑</text>
+                  <text x="17" y="33" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--ink-muted)">epoch →</text>
+                </svg>
+              </div>
+              <div style={{ opacity: 0.6 }}>
+                <svg viewBox="0 0 56 38" className="w-full" aria-hidden>
+                  <circle cx="21" cy="15" r="12" fill="rgba(178,132,80,0.07)" stroke="var(--copper-ink)" strokeWidth="0.9" strokeDasharray="2 1.5" />
+                  <circle cx="35" cy="15" r="12" fill="rgba(192,132,252,0.07)" stroke="var(--orchid)" strokeWidth="0.9" strokeDasharray="2 1.5" />
+                  <circle cx="28" cy="26" r="12" fill="rgba(196,170,232,0.07)" stroke="var(--lavender)" strokeWidth="0.9" strokeDasharray="2 1.5" />
+                  <text x="9" y="10" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--copper-ink)">HW</text>
+                  <text x="47" y="10" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--orchid)">SW</text>
+                  <text x="28" y="37" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--lavender)">math</text>
+                  <text x="28" y="19.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--rose-ink)">me ♡</text>
+                </svg>
+              </div>
+            </div>
+
             <div className="mt-auto flex items-end justify-between">
               <div>
                 <p className="font-hand text-desk-label text-ink-muted">est. USC · CECS</p>
@@ -400,52 +520,6 @@ export function NotebookArt() {
                 <path d="M10 20 H4 M34 20 h6" stroke="var(--orchid)" strokeWidth="2" strokeLinecap="round" />
               </svg>
             </div>
-          </div>
-
-          {/* mini telescope sketch */}
-          <div className="pointer-events-none absolute right-[3%] top-[38%] w-[20%]" style={{ opacity: 0.52 }}>
-            <svg viewBox="0 0 48 38" className="w-full" aria-hidden>
-              <rect x="5" y="13" width="28" height="10" rx="2.5" fill="none" stroke="var(--copper-ink)" strokeWidth="1.6" />
-              <rect x="31" y="15" width="10" height="6" rx="1.5" fill="var(--copper-ink)" opacity="0.62" />
-              <rect x="2" y="10" width="6" height="14" rx="2" fill="none" stroke="var(--copper-ink)" strokeWidth="1.6" />
-              <line x1="12" y1="23" x2="8" y2="34" stroke="var(--ink-muted)" strokeWidth="1.3" />
-              <line x1="22" y1="23" x2="22" y2="34" stroke="var(--ink-muted)" strokeWidth="1.3" />
-              <line x1="32" y1="23" x2="36" y2="34" stroke="var(--ink-muted)" strokeWidth="1.3" />
-              <circle cx="10" cy="10" r="1.2" fill="var(--lavender)" className="anim-twinkle" style={{ animationDelay: "0.7s" }} />
-              <circle cx="17" cy="7" r="0.9" fill="var(--lavender)" className="anim-twinkle" style={{ animationDelay: "1.5s" }} />
-            </svg>
-          </div>
-
-          {/* Saturn / ringed planet — next to telescope */}
-          <div className="pointer-events-none absolute left-[4%] top-[40%] w-[18%]" style={{ opacity: 0.46 }}>
-            <svg viewBox="0 0 44 28" className="w-full" aria-hidden>
-              <circle cx="22" cy="14" r="7" fill="none" stroke="var(--copper-ink)" strokeWidth="1.3" />
-              <ellipse cx="22" cy="14" rx="15" ry="4.5" fill="none" stroke="var(--copper-ink)" strokeWidth="1" />
-              <circle cx="40" cy="7" r="2" fill="none" stroke="var(--lavender)" strokeWidth="0.9" className="anim-twinkle" style={{ animationDelay: "0.5s" }} />
-              <text x="22" y="26" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--ink-muted)">Saturn?</text>
-            </svg>
-          </div>
-
-          {/* training loss + accuracy curves — ML theme, fills center gap */}
-          <div className="pointer-events-none absolute left-[42%] top-[58%] w-[22%]" style={{ opacity: 0.47 }}>
-            <svg viewBox="0 0 52 34" className="w-full" aria-hidden>
-              {/* axes */}
-              <line x1="6" y1="2" x2="6" y2="26" stroke="var(--ink-muted)" strokeWidth="0.9" />
-              <line x1="6" y1="26" x2="50" y2="26" stroke="var(--ink-muted)" strokeWidth="0.9" />
-              {/* loss curve — exponential decay */}
-              <path d="M6 3 Q12 5 18 10 Q28 18 38 23 Q44 25 50 25.5"
-                fill="none" stroke="var(--rose-ink)" strokeWidth="1.4" strokeLinecap="round" />
-              {/* accuracy curve — increasing */}
-              <path d="M6 25.5 Q12 24 18 20 Q28 13 38 7 Q44 5 50 4"
-                fill="none" stroke="var(--orchid)" strokeWidth="1.4" strokeLinecap="round" />
-              {/* legend */}
-              <line x1="30" y1="7" x2="36" y2="7" stroke="var(--rose-ink)" strokeWidth="1.2" />
-              <text x="38" y="9.5" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--rose-ink)">loss↓</text>
-              <line x1="30" y1="13" x2="36" y2="13" stroke="var(--orchid)" strokeWidth="1.2" />
-              <text x="38" y="15.5" fontFamily="var(--font-caveat)" fontSize="4.5" fill="var(--orchid)">acc↑</text>
-              {/* x-label */}
-              <text x="17" y="33" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--ink-muted)">epoch →</text>
-            </svg>
           </div>
 
           {/* neural network diagram */}
@@ -471,39 +545,6 @@ export function NotebookArt() {
               {/* output node */}
               <circle cx="62" cy="26" r="4.5" fill="var(--led)" opacity="0.55" stroke="var(--led)" strokeWidth="1" />
               <text x="36" y="50" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--ink-muted)">stress → label</text>
-            </svg>
-          </div>
-
-          {/* stress ML pipeline flowchart */}
-          <div className="pointer-events-none absolute left-[2%] bottom-[20%] w-[40%]" style={{ opacity: 0.42 }}>
-            <svg viewBox="0 0 82 32" className="w-full" aria-hidden>
-              <rect x="0" y="8" width="18" height="11" rx="2" fill="none" stroke="var(--copper-ink)" strokeWidth="1" />
-              <text x="9" y="16.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--copper-ink)">HRV</text>
-              <line x1="18" y1="13.5" x2="23" y2="13.5" stroke="var(--ink-muted)" strokeWidth="0.9" />
-              <path d="M21 11.5 L23 13.5 L21 15.5" fill="none" stroke="var(--ink-muted)" strokeWidth="0.9" />
-              <rect x="23" y="8" width="20" height="11" rx="2" fill="none" stroke="var(--orchid)" strokeWidth="1" />
-              <text x="33" y="16.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--orchid)">model</text>
-              <line x1="43" y1="13.5" x2="48" y2="13.5" stroke="var(--ink-muted)" strokeWidth="0.9" />
-              <path d="M46 11.5 L48 13.5 L46 15.5" fill="none" stroke="var(--ink-muted)" strokeWidth="0.9" />
-              <rect x="48" y="8" width="24" height="11" rx="2" fill="none" stroke="var(--hotpink)" strokeWidth="1" />
-              <text x="60" y="16.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--hotpink)">predict</text>
-              <text x="41" y="30" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--ink-muted)">stress trajectory</text>
-            </svg>
-          </div>
-
-          {/* Venn diagram — hardware ∩ software ∩ math = me */}
-          <div className="pointer-events-none absolute left-[36%] top-[75%] w-[26%]" style={{ opacity: 0.52 }}>
-            <svg viewBox="0 0 56 38" className="w-full" aria-hidden>
-              {/* three dashed overlapping circles */}
-              <circle cx="21" cy="15" r="12" fill="rgba(178,132,80,0.07)" stroke="var(--copper-ink)" strokeWidth="0.9" strokeDasharray="2 1.5" />
-              <circle cx="35" cy="15" r="12" fill="rgba(192,132,252,0.07)" stroke="var(--orchid)" strokeWidth="0.9" strokeDasharray="2 1.5" />
-              <circle cx="28" cy="26" r="12" fill="rgba(196,170,232,0.07)" stroke="var(--lavender)" strokeWidth="0.9" strokeDasharray="2 1.5" />
-              {/* outer labels */}
-              <text x="9" y="10" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--copper-ink)">HW</text>
-              <text x="47" y="10" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--orchid)">SW</text>
-              <text x="28" y="37" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="var(--lavender)">math</text>
-              {/* center — the intersection */}
-              <text x="28" y="19.5" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5.5" fill="var(--rose-ink)">me ♡</text>
             </svg>
           </div>
 

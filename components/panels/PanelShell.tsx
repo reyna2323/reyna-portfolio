@@ -15,7 +15,7 @@ const VARIANT_STYLES: Record<PanelVariant, string> = {
   folder: "bg-gradient-to-b from-folder to-folder-dark border-copper/50",
   window: "bg-gradient-to-b from-[#2a1830] to-[#1f0f27] border-lavender/30",
   schematic: "bg-[#150c1c] border-mintled/25",
-  casefile: "bg-gradient-to-b from-paper to-blush/50 border-hotpink/35 ruled-lines",
+  casefile: "bg-gradient-to-b from-paper to-blush border-hotpink/35 ruled-lines",
 };
 
 const VARIANT_FAMILY: Record<PanelVariant, "light" | "dark"> = {
