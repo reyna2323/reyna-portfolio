@@ -1,5 +1,7 @@
-/** A miniature desk orrery: a ringed planet paperweight with a moon in slow orbit. Purely ambient, non-interactive. */
-export function OrreryArt() {
+/** A miniature desk orrery: a ringed planet paperweight with a moon in slow
+ *  orbit. `spun` briefly whips the moon around fast, a reward for clicking
+ *  something that looks like it's just sitting there for decoration. */
+export function OrreryArt({ spun = false }: { spun?: boolean }) {
   return (
     <div className="relative aspect-square w-full" aria-hidden>
       <div className="absolute inset-x-3 bottom-0 h-3 rounded-[50%] bg-black/35 blur-md" />
@@ -22,10 +24,15 @@ export function OrreryArt() {
           </radialGradient>
         </defs>
 
-        {/* moon, orbiting via a slowly rotating parent group offset from the planet's center */}
-        <g className="anim-rotate-slow" style={{ transformOrigin: "40px 34px" }}>
+        {/* moon, orbiting via a slowly rotating parent group offset from the
+            planet's center — spins fast for a couple of laps when poked */}
+        <g
+          className="anim-rotate-slow"
+          style={{ transformOrigin: "40px 34px", animationDuration: spun ? "0.7s" : undefined }}
+        >
           <circle cx="70" cy="34" r="3.4" fill="var(--rosegold)" />
           <circle cx="70" cy="34" r="1" fill="var(--copper)" opacity="0.6" />
+          {spun && <circle cx="70" cy="34" r="6" fill="none" stroke="var(--led)" strokeWidth="0.8" opacity="0.6" />}
         </g>
 
         {/* tiny stars scattered around the dome */}
@@ -34,7 +41,7 @@ export function OrreryArt() {
         <circle cx="8" cy="42" r="0.7" fill="var(--glass-strong)" className="anim-twinkle" style={{ animationDelay: "2.1s" }} />
 
         <text x="40" y="76" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="6" fill="var(--glass-muted)" opacity="0.7">
-          world no. 2
+          {spun ? "wheee ✦" : "world no. 2"}
         </text>
       </svg>
     </div>

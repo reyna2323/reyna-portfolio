@@ -357,6 +357,38 @@ body {
   0% { transform: scale(0.85); opacity: 0.55; }
   100% { transform: scale(1.9); opacity: 0; }
 }
+@keyframes cursor-trail-fade {
+  0% { transform: translate(-50%, -50%) scale(0.4); opacity: 0.85; }
+  100% { transform: translate(-50%, -80%) scale(1.1); opacity: 0; }
+}
+.anim-cursor-trail {
+  animation: cursor-trail-fade 0.85s ease-out forwards;
+}
+@keyframes eye-blink {
+  0%, 92%, 100% { transform: scaleY(1); }
+  95% { transform: scaleY(0.12); }
+}
+.anim-eye-blink {
+  animation: eye-blink 4.6s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+@keyframes sunbeam-drift {
+  0% { transform: translateX(-30%) rotate(-18deg); opacity: 0; }
+  15% { opacity: 0.5; }
+  50% { opacity: 0.5; }
+  85% { opacity: 0; }
+  100% { transform: translateX(130%) rotate(-18deg); opacity: 0; }
+}
+.anim-sunbeam {
+  animation: sunbeam-drift 26s ease-in-out infinite;
+}
+@keyframes draw-line {
+  0% { stroke-dashoffset: 44; opacity: 0; }
+  15% { opacity: 1; }
+  85% { opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
 
 .anim-dust {
   animation: dust-drift 9s ease-in-out infinite;
@@ -440,7 +472,10 @@ body {
   .anim-paper-flutter,
   .anim-tag-swing,
   .anim-flicker,
-  .anim-ring-pulse {
+  .anim-ring-pulse,
+  .anim-sunbeam,
+  .anim-cursor-trail,
+  .anim-eye-blink {
     animation: none;
   }
   .shimmer::before {

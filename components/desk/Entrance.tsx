@@ -10,6 +10,8 @@ export function Entrance({ onDone }: { onDone: () => void }) {
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
+  const seamRef = useRef<HTMLDivElement>(null);
+  const sparkRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (reduced) {
@@ -30,8 +32,17 @@ export function Entrance({ onDone }: { onDone: () => void }) {
           { opacity: 1 },
           { opacity: 1, duration: 0.4 },
         )
+        // a seam of light finds its way through the cover just before it splits
+        .fromTo(seamRef.current, { opacity: 0 }, { opacity: 1, duration: 0.35, ease: "power1.in" }, 0.15)
         .to(leftRef.current, { xPercent: -100, rotateY: -12, duration: 1.05, ease: "power3.inOut" }, 0.5)
         .to(rightRef.current, { xPercent: 100, rotateY: 12, duration: 1.05, ease: "power3.inOut" }, 0.5)
+        .to(seamRef.current, { opacity: 0, duration: 0.3 }, 0.5)
+        .fromTo(
+          sparkRef.current,
+          { opacity: 1, scale: 0.4 },
+          { opacity: 0, scale: 2.4, duration: 0.7, ease: "power2.out" },
+          0.5,
+        )
         .to(rootRef.current, { opacity: 0, duration: 0.3, pointerEvents: "none" }, "-=0.15");
     });
     return () => {
@@ -53,6 +64,19 @@ export function Entrance({ onDone }: { onDone: () => void }) {
           <span className="font-hand text-entrance-mark text-glass-strong">P</span>
         </div>
       </div>
+      {/* seam glow + a small burst of light, right where the cover splits */}
+      <div
+        ref={seamRef}
+        className="pointer-events-none absolute inset-y-0 left-1/2 z-10 w-px -translate-x-1/2 opacity-0"
+        style={{ boxShadow: "0 0 40px 6px rgba(253,242,247,0.65)", background: "rgba(253,242,247,0.9)" }}
+        aria-hidden
+      />
+      <div
+        ref={sparkRef}
+        className="pointer-events-none absolute left-1/2 top-1/2 z-10 h-24 w-24 -translate-x-1/2 -translate-y-1/2 rounded-full opacity-0"
+        style={{ background: "radial-gradient(circle, rgba(253,242,247,0.9), rgba(236,143,189,0.3) 45%, transparent 75%)" }}
+        aria-hidden
+      />
     </div>
   );
 }

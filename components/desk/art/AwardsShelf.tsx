@@ -3,6 +3,11 @@ export function AwardsShelfArt() {
   return (
     <div className="relative aspect-[4/5] w-full">
       <div className="absolute inset-x-4 bottom-0 h-4 rounded-[50%] bg-black/35 blur-md" />
+      {/* polish-shine sweep, clipped to its own layer so it never eats into
+          the trophy's drop-shadow */}
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+        <div className="absolute inset-y-0 -left-1/3 w-1/4 -skew-x-12 -translate-x-full bg-gradient-to-r from-transparent via-white/55 to-transparent transition-transform duration-700 ease-out group-hover:translate-x-[520%]" />
+      </div>
       <svg viewBox="0 0 100 128" className="h-full w-full drop-shadow-[0_10px_18px_rgba(0,0,0,0.4)]" aria-hidden>
         <defs>
           <linearGradient id="trophyGold" x1="0" y1="0" x2="0" y2="1">

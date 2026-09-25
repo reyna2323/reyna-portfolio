@@ -2,7 +2,7 @@
 
 import { motion, useReducedMotion } from "framer-motion";
 import { X, Minus, GripHorizontal } from "lucide-react";
-import type { RefObject } from "react";
+import { useEffect, useId, useRef, type RefObject } from "react";
 
 export type PanelVariant = "notebook" | "folder" | "window" | "schematic" | "casefile";
 
@@ -15,10 +15,10 @@ const VARIANT_STYLES: Record<PanelVariant, string> = {
   folder: "bg-gradient-to-b from-folder to-folder-dark border-copper/50",
   window: "bg-gradient-to-b from-[#2a1830] to-[#1f0f27] border-lavender/30",
   schematic: "bg-[#150c1c] border-mintled/25",
-  casefile: "bg-gradient-to-b from-paper to-blush border-hotpink/35 ruled-lines",
+  casefile: "bg-blush border-hotpink/35 ruled-lines",
 };
 
-const VARIANT_FAMILY: Record<PanelVariant, "light" | "dark"> = {
+export const VARIANT_FAMILY: Record<PanelVariant, "light" | "dark"> = {
   notebook: "light",
   folder: "light",
   window: "dark",
@@ -51,6 +51,7 @@ interface PanelShellProps {
   onMinimize: () => void;
   dragConstraints: RefObject<HTMLElement | null>;
   widthClass?: string;
+  footer?: React.ReactNode;
   children: React.ReactNode;
 }
 
@@ -61,17 +62,35 @@ export function PanelShell({
   onClose,
   onMinimize,
   dragConstraints,
-  widthClass = "w-[min(92vw,640px)]",
+  widthClass = "w-[min(92vw,680px)]",
+  footer,
   children,
 }: PanelShellProps) {
   const reduced = useReducedMotion();
   const family = VARIANT_FAMILY[variant];
+  const titleId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  // Move focus into the page when it opens so keyboard and screen-reader
+  // users land on the content, and hand it back to whatever opened it
+  // (a desk object, the dock) when it closes. Flipping to another page
+  // leaves focus on the new page instead of the one animating out.
+  useEffect(() => {
+    const opener = document.activeElement as HTMLElement | null;
+    rootRef.current?.focus({ preventScroll: true });
+    return () => {
+      if (opener && opener.isConnected && !opener.closest("[role=dialog]")) {
+        opener.focus({ preventScroll: true });
+      }
+    };
+  }, []);
 
   return (
     <motion.div
+      ref={rootRef}
       role="dialog"
-      aria-modal="true"
-      aria-label={title}
+      aria-labelledby={titleId}
+      tabIndex={-1}
       drag
       dragConstraints={dragConstraints}
       dragElastic={0.06}
@@ -83,13 +102,15 @@ export function PanelShell({
         opacity: { duration: 0.28, ease: "easeOut" },
         default: { type: "spring", stiffness: 260, damping: 24, mass: 0.9 },
       }}
-      className={`pointer-events-auto relative ${widthClass} max-h-[82vh] overflow-hidden rounded-2xl border shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)] ${VARIANT_STYLES[variant]}`}
+      className={`pointer-events-auto relative ${widthClass} flex max-h-[84vh] flex-col overflow-hidden rounded-2xl border outline-none shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)] ${VARIANT_STYLES[variant]}`}
     >
       <div className={`flex cursor-grab items-center justify-between gap-3 border-b px-5 py-3 active:cursor-grabbing ${HEADER_BORDER[family]}`}>
         <div className="flex items-center gap-2.5 overflow-hidden">
           <GripHorizontal size={14} className={`shrink-0 ${HEADER_SUB[family]}`} aria-hidden />
           <div className="min-w-0">
-            <p className={`truncate text-sm font-semibold tracking-wide ${HEADER_TITLE[family]}`}>{title}</p>
+            <h2 id={titleId} className={`truncate text-base font-semibold tracking-wide ${HEADER_TITLE[family]}`}>
+              {title}
+            </h2>
             <p className={`truncate font-hand text-hand-md leading-none ${HEADER_SUB[family]}`}>{subtitle}</p>
           </div>
         </div>
@@ -97,7 +118,7 @@ export function PanelShell({
           <button
             type="button"
             onClick={onMinimize}
-            aria-label={`Minimize ${title} panel`}
+            aria-label={`Minimize ${title}`}
             className={`rounded-full p-1.5 transition-colors ${ICON_BTN[family]}`}
           >
             <Minus size={15} />
@@ -105,14 +126,15 @@ export function PanelShell({
           <button
             type="button"
             onClick={onClose}
-            aria-label={`Close ${title} panel`}
+            aria-label={`Close ${title}`}
             className={`rounded-full p-1.5 transition-colors hover:bg-hotpink/20 hover:text-hotpink ${HEADER_SUB[family]}`}
           >
             <X size={15} />
           </button>
         </div>
       </div>
-      <div className="panel-scroll max-h-[calc(82vh-56px)] overflow-y-auto p-5">{children}</div>
+      <div className="panel-scroll min-h-0 flex-1 overflow-y-auto p-5">{children}</div>
+      {footer}
     </motion.div>
   );
 }

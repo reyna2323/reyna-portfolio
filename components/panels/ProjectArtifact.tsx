@@ -38,20 +38,22 @@ export function ProjectArtifact({ project }: { project: Project }) {
   const surface = ARTIFACT_SURFACE[project.artifact];
   const fam = surface.family;
   return (
-    <article className={`relative rounded-lg border p-4 ${surface.bg} ${fam === "dark" ? "font-mono" : ""}`}>
-      <span className={`absolute right-3 top-3 rounded-full border px-2 py-0.5 text-[0.6rem] uppercase tracking-wide ${CHIP[fam]}`}>
+    <article
+      className={`relative rounded-lg border p-4 transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_30px_-14px_rgba(0,0,0,0.45)] ${surface.bg} ${fam === "dark" ? "font-mono" : ""}`}
+    >
+      <span aria-hidden className={`absolute right-3 top-3 rounded-full border px-2 py-0.5 text-[0.65rem] uppercase tracking-wide ${CHIP[fam]}`}>
         {ARTIFACT_LABEL[project.artifact]}
       </span>
-      <p className={`pr-20 text-desk-micro uppercase tracking-wide ${META[fam]}`}>
+      <p className={`pr-24 text-xs uppercase tracking-wide ${META[fam]}`}>
         {project.category}
         {project.period ? ` · ${project.period}` : ""}
       </p>
-      <h4 className={`mt-1 font-hand text-hand-xl leading-tight ${surface.accent}`}>{project.title}</h4>
+      <h3 className={`mt-1 font-hand text-hand-xl leading-tight ${surface.accent}`}>{project.title}</h3>
       <p className={`mt-2 text-sm leading-relaxed ${BODY[fam]}`}>{project.description}</p>
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         {project.stack.map((s) => (
-          <span key={s} className={`rounded-full border px-2 py-0.5 text-[0.68rem] ${CHIP[fam]}`}>
+          <span key={s} className={`rounded-full border px-2 py-0.5 text-xs ${CHIP[fam]}`}>
             {s}
           </span>
         ))}
@@ -59,7 +61,7 @@ export function ProjectArtifact({ project }: { project: Project }) {
 
       <dl className="mt-3 space-y-2 text-sm">
         <div>
-          <dt className={`text-[0.68rem] font-semibold uppercase tracking-wide ${META[fam]}`}>What I built</dt>
+          <dt className={`text-xs font-semibold uppercase tracking-wide ${META[fam]}`}>What I built</dt>
           <dd className={BODY[fam]}>{project.built}</dd>
           {project.highlights && project.highlights.length > 0 && (
             <ul className="mt-1.5 space-y-1">
@@ -73,29 +75,35 @@ export function ProjectArtifact({ project }: { project: Project }) {
           )}
         </div>
         <div>
-          <dt className={`text-[0.68rem] font-semibold uppercase tracking-wide ${META[fam]}`}>Why it mattered</dt>
+          <dt className={`text-xs font-semibold uppercase tracking-wide ${META[fam]}`}>Why it mattered</dt>
           <dd className={BODY[fam]}>{project.mattered}</dd>
         </div>
       </dl>
 
-      <div className="mt-3 flex gap-2">
-        <a
-          href={project.github ?? "#"}
-          target="_blank"
-          rel="noreferrer"
-          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors ${BUTTON[fam]}`}
-        >
-          <GitBranch size={12} aria-hidden /> GitHub
-        </a>
-        <a
-          href={project.demo ?? "#"}
-          target="_blank"
-          rel="noreferrer"
-          className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors ${BUTTON[fam]}`}
-        >
-          <ExternalLink size={12} aria-hidden /> Demo
-        </a>
-      </div>
+      {(project.github || project.demo) && (
+        <div className="mt-3 flex gap-2">
+          {project.github && (
+            <a
+              href={project.github}
+              target="_blank"
+              rel="noreferrer"
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors ${BUTTON[fam]}`}
+            >
+              <GitBranch size={12} aria-hidden /> GitHub
+            </a>
+          )}
+          {project.demo && (
+            <a
+              href={project.demo}
+              target="_blank"
+              rel="noreferrer"
+              className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors ${BUTTON[fam]}`}
+            >
+              <ExternalLink size={12} aria-hidden /> Demo
+            </a>
+          )}
+        </div>
+      )}
     </article>
   );
 }

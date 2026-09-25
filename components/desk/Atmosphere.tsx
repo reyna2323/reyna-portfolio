@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useReducedMotion, useTransform } from "framer-motion";
 import { usePointer } from "./Parallax";
 
@@ -45,8 +45,17 @@ interface ShootingStar {
   duration: number;
 }
 
+interface TrailSparkle {
+  id: number;
+  x: number;
+  y: number;
+  glyph: string;
+}
+
 const HUES = ["var(--pink)", "var(--lavender)", "var(--rosegold)", "var(--led)", "var(--lilac)"];
 const GLYPHS = ["✦", "✧", "✦", "✧", "⋆"];
+const TRAIL_GLYPHS = ["✦", "✧", "⋆"];
+const TRAIL_HUES = ["text-lavender", "text-pink", "text-rosegold"];
 
 /** Soft drifting bokeh, twinkling star-field, and sparkle glyphs — purely decorative. */
 export function Atmosphere() {
@@ -114,9 +123,53 @@ export function Atmosphere() {
   const glowX = useTransform(px, (v) => `${50 + v * 38}%`);
   const glowY = useTransform(py, (v) => `${50 + v * 38}%`);
 
+  // a faint trail of sparkles that follows a real mouse (never a touch
+  // scroll/drag) across the desk. Throttled and capped, and never captures
+  // pointer events, so it can't get in the way of clicking anything.
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [trail, setTrail] = useState<TrailSparkle[]>([]);
+  const lastSpawn = useRef(0);
+  const trailId = useRef(0);
+
+  useEffect(() => {
+    if (reduced) return;
+    if (typeof window === "undefined" || !window.matchMedia("(pointer: fine)").matches) return;
+
+    const onMove = (e: PointerEvent) => {
+      const now = performance.now();
+      if (now - lastSpawn.current < 130) return;
+      lastSpawn.current = now;
+      const root = rootRef.current;
+      if (!root) return;
+      const r = root.getBoundingClientRect();
+      const x = e.clientX - r.left;
+      const y = e.clientY - r.top;
+      if (x < 0 || y < 0 || x > r.width || y > r.height) return;
+      const id = trailId.current++;
+      setTrail((prev) => [...prev.slice(-12), { id, x, y, glyph: TRAIL_GLYPHS[id % TRAIL_GLYPHS.length] }]);
+      window.setTimeout(() => {
+        setTrail((prev) => prev.filter((s) => s.id !== id));
+      }, 850);
+    };
+
+    window.addEventListener("pointermove", onMove);
+    return () => window.removeEventListener("pointermove", onMove);
+  }, [reduced]);
+
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+    <div ref={rootRef} className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
       <div className="grain absolute inset-0" />
+
+      {/* cursor sparkle trail */}
+      {trail.map((s, i) => (
+        <span
+          key={s.id}
+          className={`anim-cursor-trail absolute select-none ${TRAIL_HUES[i % TRAIL_HUES.length]}`}
+          style={{ left: s.x, top: s.y, fontSize: 11 }}
+        >
+          {s.glyph}
+        </span>
+      ))}
 
       {/* cursor-reactive light wash — follows pointer with a soft spring lag */}
       {!reduced && (
