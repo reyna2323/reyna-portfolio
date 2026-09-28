@@ -1,12 +1,12 @@
 "use client";
 
-import { useReducedMotion } from "framer-motion";
 import { useTypedLines } from "@/lib/useTypedLines";
 import { terminalScript } from "@/lib/content";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 /** Rose-gold laptop with a live auto-typing terminal. */
 export function LaptopArt() {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { history, current } = useTypedLines(terminalScript, !reduced);
 
   return (
@@ -21,23 +21,27 @@ export function LaptopArt() {
         <div className="flex h-full flex-col overflow-hidden rounded-md bg-deepplum/90 p-[3%] font-mono">
           {/* window chrome */}
           <div className="mb-[2%] flex items-center gap-[1.5%]">
-            <span className="h-[0.55vw] w-[0.55vw] rounded-full bg-hotpink" />
-            <span className="h-[0.55vw] w-[0.55vw] rounded-full bg-rosegold" />
-            <span className="h-[0.55vw] w-[0.55vw] rounded-full bg-mintled" />
+            <span className="h-[calc(var(--su)*0.55)] w-[calc(var(--su)*0.55)] rounded-full bg-hotpink" />
+            <span className="h-[calc(var(--su)*0.55)] w-[calc(var(--su)*0.55)] rounded-full bg-rosegold" />
+            <span className="h-[calc(var(--su)*0.55)] w-[calc(var(--su)*0.55)] rounded-full bg-mintled" />
             <span className="ml-[3%] text-desk-micro text-glass-muted">reyna@desk ~ zsh</span>
           </div>
-          <div className="space-y-[1.5%] text-desk-label leading-relaxed">
-            {history.map((line, i) => (
-              <p key={`${line}-${i}`} className="text-glass-muted">
-                <span className="text-circuit">❯</span> {line}
-              </p>
+          {/* newest line pinned to the bottom so it never clips; older ones scroll off the top */}
+          <div className="flex min-h-0 flex-1 flex-col justify-end overflow-hidden text-desk-label leading-relaxed">
+            {(reduced ? terminalScript.slice(-1) : history).map((entry, i) => (
+              <div key={`${entry.cmd}-${i}`}>
+                <p className="truncate text-glass-muted">
+                  <span className="text-circuit">❯</span> {entry.cmd}
+                </p>
+                {entry.out && <p className="anim-fade-up truncate text-desk-micro text-circuit">{entry.out}</p>}
+              </div>
             ))}
             <p className="text-glass-strong">
               <span className="text-hotpink">❯</span> {current}
               <span className="anim-blink ml-[2px] inline-block h-[0.75em] w-[0.45em] translate-y-[0.1em] bg-led" />
             </p>
           </div>
-          <p className="mt-auto text-desk-micro text-glass-muted">▲ full-stack · always shipping</p>
+          <p className="mt-[2%] text-desk-micro text-glass-muted">▲ full-stack · always shipping</p>
         </div>
       </div>
       {/* base / keyboard deck */}
@@ -62,7 +66,7 @@ export function LaptopArt() {
         </span>
         <span
           className="absolute bottom-[6%] right-[7%] rotate-[6deg] text-hotpink"
-          style={{ fontSize: "max(6px, 0.5vw)" }}
+          style={{ fontSize: "max(6px, calc(var(--su) * 0.5))" }}
         >
           ♡
         </span>

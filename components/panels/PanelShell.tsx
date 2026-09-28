@@ -1,8 +1,9 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useDragControls } from "framer-motion";
 import { X, Minus, GripHorizontal } from "lucide-react";
 import { useEffect, useId, useRef, type RefObject } from "react";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 export type PanelVariant = "notebook" | "folder" | "window" | "schematic" | "casefile";
 
@@ -12,10 +13,10 @@ export type PanelVariant = "notebook" | "folder" | "window" | "schematic" | "cas
    Never reach for opacity modifiers on these — add a token instead. */
 const VARIANT_STYLES: Record<PanelVariant, string> = {
   notebook: "bg-paper border-pink/40 graph-paper",
-  folder: "bg-gradient-to-b from-folder to-folder-dark border-copper/50",
+  folder: "surface-folder bg-gradient-to-b from-folder to-folder-dark border-copper/50",
   window: "bg-gradient-to-b from-[#2a1830] to-[#1f0f27] border-lavender/30",
   schematic: "bg-[#150c1c] border-mintled/25",
-  casefile: "bg-blush border-hotpink/35 ruled-lines",
+  casefile: "surface-blush bg-blush border-hotpink/35 ruled-lines",
 };
 
 export const VARIANT_FAMILY: Record<PanelVariant, "light" | "dark"> = {
@@ -66,18 +67,20 @@ export function PanelShell({
   footer,
   children,
 }: PanelShellProps) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const family = VARIANT_FAMILY[variant];
   const titleId = useId();
   const rootRef = useRef<HTMLDivElement>(null);
+  const bodyRef = useRef<HTMLDivElement>(null);
+  const dragControls = useDragControls();
 
-  // Move focus into the page when it opens so keyboard and screen-reader
-  // users land on the content, and hand it back to whatever opened it
+  // Move focus into the page body when it opens so keyboard and screen-reader
+  // users land on the content (and ↑ ↓ / Space scroll it straight away), and hand it back to whatever opened it
   // (a desk object, the dock) when it closes. Flipping to another page
   // leaves focus on the new page instead of the one animating out.
   useEffect(() => {
     const opener = document.activeElement as HTMLElement | null;
-    rootRef.current?.focus({ preventScroll: true });
+    (bodyRef.current ?? rootRef.current)?.focus({ preventScroll: true });
     return () => {
       if (opener && opener.isConnected && !opener.closest("[role=dialog]")) {
         opener.focus({ preventScroll: true });
@@ -92,6 +95,8 @@ export function PanelShell({
       aria-labelledby={titleId}
       tabIndex={-1}
       drag
+      dragControls={dragControls}
+      dragListener={false}
       dragConstraints={dragConstraints}
       dragElastic={0.06}
       dragMomentum={false}
@@ -104,7 +109,13 @@ export function PanelShell({
       }}
       className={`pointer-events-auto relative ${widthClass} flex max-h-[84vh] flex-col overflow-hidden rounded-2xl border outline-none shadow-[0_30px_60px_-20px_rgba(0,0,0,0.6)] ${VARIANT_STYLES[variant]}`}
     >
-      <div className={`flex cursor-grab items-center justify-between gap-3 border-b px-5 py-3 active:cursor-grabbing ${HEADER_BORDER[family]}`}>
+      {/* only the title bar moves the page, so text stays selectable and the body scrolls by touch */}
+      <div
+        onPointerDown={(e) => {
+          if (!(e.target as HTMLElement).closest("button")) dragControls.start(e);
+        }}
+        className={`flex cursor-grab touch-none items-center justify-between gap-3 border-b px-5 py-3 active:cursor-grabbing ${HEADER_BORDER[family]}`}
+      >
         <div className="flex items-center gap-2.5 overflow-hidden">
           <GripHorizontal size={14} className={`shrink-0 ${HEADER_SUB[family]}`} aria-hidden />
           <div className="min-w-0">
@@ -119,7 +130,7 @@ export function PanelShell({
             type="button"
             onClick={onMinimize}
             aria-label={`Minimize ${title}`}
-            className={`rounded-full p-1.5 transition-colors ${ICON_BTN[family]}`}
+            className={`rounded-full p-1.5 transition-colors pointer-coarse:p-2.5 ${ICON_BTN[family]}`}
           >
             <Minus size={15} />
           </button>
@@ -127,13 +138,20 @@ export function PanelShell({
             type="button"
             onClick={onClose}
             aria-label={`Close ${title}`}
-            className={`rounded-full p-1.5 transition-colors hover:bg-hotpink/20 hover:text-hotpink ${HEADER_SUB[family]}`}
+            className={`rounded-full p-1.5 transition-colors pointer-coarse:p-2.5 hover:bg-hotpink/20 hover:text-hotpink ${HEADER_SUB[family]}`}
           >
             <X size={15} />
           </button>
         </div>
       </div>
-      <div className="panel-scroll min-h-0 flex-1 overflow-y-auto p-5">{children}</div>
+      <div
+        ref={bodyRef}
+        tabIndex={0}
+        aria-labelledby={titleId}
+        className="panel-scroll min-h-0 flex-1 overflow-y-auto p-5 outline-offset-[-3px]"
+      >
+        {children}
+      </div>
       {footer}
     </motion.div>
   );

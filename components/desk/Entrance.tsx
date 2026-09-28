@@ -1,17 +1,19 @@
 "use client";
 
 import { useEffect, useRef } from "react";
-import { useReducedMotion } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 /** GSAP-driven entrance: the notebook "cover" splits open like double doors
- *  to reveal the desk underneath. Skips straight through for reduced motion. */
+ *  to reveal the desk underneath. Skips straight through for reduced motion,
+ *  and any click, tap or key fast-forwards it for people in a hurry. */
 export function Entrance({ onDone }: { onDone: () => void }) {
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const leftRef = useRef<HTMLDivElement>(null);
   const rightRef = useRef<HTMLDivElement>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const seamRef = useRef<HTMLDivElement>(null);
   const sparkRef = useRef<HTMLDivElement>(null);
+  const hurry = useRef<() => void>(() => {});
 
   useEffect(() => {
     if (reduced) {
@@ -44,16 +46,25 @@ export function Entrance({ onDone }: { onDone: () => void }) {
           0.5,
         )
         .to(rootRef.current, { opacity: 0, duration: 0.3, pointerEvents: "none" }, "-=0.15");
+      hurry.current = () => tl.timeScale(5);
     });
+    const onKey = () => hurry.current();
+    window.addEventListener("keydown", onKey);
     return () => {
       cancelled = true;
+      window.removeEventListener("keydown", onKey);
     };
   }, [reduced, onDone]);
 
   if (reduced) return null;
 
   return (
-    <div ref={rootRef} className="fixed inset-0 z-[100] flex" style={{ perspective: 1200 }}>
+    <div
+      ref={rootRef}
+      onPointerDown={() => hurry.current()}
+      className="fixed inset-0 z-[100] flex cursor-pointer"
+      style={{ perspective: 1200 }}
+    >
       <div ref={leftRef} className="h-full w-1/2 bg-gradient-to-br from-plum to-deepplum shadow-2xl">
         <div className="flex h-full items-center justify-end pr-2">
           <span className="font-hand text-entrance-mark text-glass-strong">R</span>

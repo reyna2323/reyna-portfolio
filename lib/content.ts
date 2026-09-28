@@ -31,6 +31,7 @@ export interface Section {
   hand: string; // handwritten tag shown on the desk object
   object: string; // which desk object opens it, shown on the contents page
   blurb: string; // one-liner shown in headers and on the contents page
+  featured?: boolean; // gets the spotlight treatment on the desk and contents page
 }
 
 export interface Project {
@@ -70,11 +71,11 @@ export const startPage = {
 };
 
 export const sections: Section[] = [
-  { id: "about", label: "About", hand: "about me ♡", object: "the notebook", blurb: "who I am and where I study" },
+  { id: "research", label: "Research", hand: "my research", object: "the oscilloscope", blurb: "wearable-data pipelines, ML & 3 papers", featured: true },
   { id: "experience", label: "Experience", hand: "experience", object: "the résumé folder", blurb: "every role, newest first" },
-  { id: "research", label: "Research", hand: "research", object: "the oscilloscope", blurb: "ML on heart-rate signals + 3 papers" },
   { id: "projects", label: "Projects", hand: "projects", object: "the laptop", blurb: "an app, a nonprofit & exoplanets" },
-  { id: "skills", label: "Skills", hand: "skills & tools", object: "the pink circuit board", blurb: "languages, frameworks & coursework" },
+  { id: "skills", label: "Skills", hand: "skills & tools", object: "the pink circuit board", blurb: "languages, cloud, research methods" },
+  { id: "about", label: "About", hand: "about me ♡", object: "the notebook", blurb: "who I am and where I study" },
   { id: "awards", label: "Awards", hand: "shiny things ✧", object: "the trophy shelf", blurb: "awards & certifications" },
   { id: "contact", label: "Contact", hand: "say hi!", object: "the envelope", blurb: "email, LinkedIn & GitHub" },
 ];
@@ -95,12 +96,18 @@ export function isPageId(value: string): value is PageId {
 export const intro = {
   greeting: "hi, I'm Reyna ♡",
   summary:
-    "I study Computer Engineering & Computer Science at USC with a minor in Mathematics. I build ML pipelines for research, full-stack apps that people actually use, and the curriculum that teaches the next kid how an Arduino works.",
-  now: [
-    { label: "researching", value: "physiological ML for a socially assistive robot at the USC Viterbi Interaction Lab" },
-    { label: "publishing", value: "second author on 2 manuscripts submitted to CHI 2027 and HRI 2027" },
-    { label: "graduating", value: "May 2028, B.S. CECS + Math minor" },
-  ],
+    "I'm an undergraduate researcher at the USC Viterbi Interaction Lab, and I study Computer Engineering & Computer Science with a Math minor at USC (class of 2028).",
+  featured: {
+    kicker: "featured · my research",
+    title: "Wearable data + ML for a robot that helps with anxiety",
+    detail:
+      "I build the data pipelines, analyses, and human-centered research behind a socially assistive robot that coaches people through CBT, in an NIH-funded study.",
+    stats: [
+      { value: "3", label: "manuscripts submitted" },
+      { value: "~20", label: "study participants" },
+      { value: "6", label: "AWS services in my pipeline" },
+    ],
+  },
 };
 
 /* ------------------------------------------------------------------- about */
@@ -168,7 +175,7 @@ export const experience: Role[] = [
       "Developing statistical analysis models forecasting stress trajectories for a socially assistive robot delivering CBT exercises",
       "Second author on 2 research manuscripts submitted to CHI 2027 and HRI 2027; contributor to a manuscript submitted to IEEE T-RO",
     ],
-    more: { to: "research", label: "read about the research" },
+    more: { to: "research", label: "see all 20+ things I work on in the lab" },
   },
   {
     id: "den",
@@ -238,31 +245,218 @@ export const experience: Role[] = [
 
 /* ---------------------------------------------------------------- research */
 
+export type ResearchArea = "data" | "analysis" | "people" | "comms" | "infra";
+
+export interface ResearchItem {
+  title: string;
+  detail: string;
+  skills: string[];
+  area: ResearchArea;
+  featured?: boolean; // the 8 highlights at the top of the page
+}
+
 export const research = {
-  intro:
-    "I like ML where it touches real people. At the Interaction Lab I work on the data side of a socially assistive robot that guides people through CBT exercises: turning raw heart-rate signals into something the robot can act on.",
   lab: "USC Viterbi Interaction Lab",
+  role: "Undergraduate Researcher",
   period: "Sep 2025 to Present",
-  work: [
-    {
-      title: "Heart-rate ML pipelines",
-      detail: "Python pipelines that clean, window, and model physiological heart-rate signals across hundreds of study sessions.",
-    },
-    {
-      title: "Stress-trajectory forecasting",
-      detail: "Statistical models that forecast how a participant's stress evolves, so the robot can respond before the spike instead of after it.",
-    },
-    {
-      title: "Study automation",
-      detail: "Fitbit compliance tracking and automated reminder emails (Python, AWS SES) that keep a 20-participant NIH-funded study on track.",
-    },
+  headline: "I build the data systems and research behind a robot that helps people through anxiety.",
+  intro:
+    "The lab runs an NIH-funded study where a socially assistive robot (SAR) guides people through cognitive behavioral therapy (CBT) exercises while they wear Fitbits. I own a lot of what happens to that data: getting it off the wrist and into the cloud, checking it, lining it up with each session, analyzing it, and writing it up. I also work on the human side, analyzing what therapists and students actually want from a robot like this.",
+  stats: [
+    { value: "3", label: "manuscripts submitted: CHI 2027, HRI 2027 & IEEE T-RO" },
+    { value: "~20", label: "participants in a longitudinal NIH-funded study" },
+    { value: "6", label: "AWS services in my automated data pipeline" },
+    { value: "4+", label: "physiological signals aligned to sessions: HR, EDA, skin temp, SpO₂" },
   ],
-  tools: ["Python", "ML pipelines", "Statistical modeling", "Time-series signals", "AWS SES", "Fitbit data"],
+  // the signal chain, left to right, drawn as a flow on the research page
+  flow: [
+    { step: "Collect", detail: "Fitbit API (OAuth) + Google Takeout exports" },
+    { step: "Ingest", detail: "Lambda + EventBridge on a schedule, into S3" },
+    { step: "Clean", detail: "QC gates, UTC to local time, session alignment" },
+    { step: "Analyze", detail: "windowed features, exercise comparisons, forecasting" },
+    { step: "Share", detail: "figures, papers, and one day, robot behavior" },
+  ],
   publications: [
     { venue: "CHI 2027", role: "Second author", status: "manuscript submitted" },
     { venue: "HRI 2027", role: "Second author", status: "manuscript submitted" },
     { venue: "IEEE Transactions on Robotics (T-RO)", role: "Contributor", status: "manuscript submitted" },
   ],
+  publicationTopics:
+    "The two second-author papers cover wearable physiological data during robot-guided CBT, and participatory design with therapists and university students.",
+  areas: {
+    data: "Data & cloud engineering",
+    analysis: "Data science & modeling",
+    people: "Human-centered research",
+    comms: "Scientific communication",
+    infra: "Infrastructure & operations",
+  } satisfies Record<ResearchArea, string>,
+  items: [
+    /* ----- the 8 highlights ----- */
+    {
+      featured: true,
+      area: "data",
+      title: "Automated AWS pipeline for longitudinal Fitbit data",
+      detail:
+        "Designed a scheduled pipeline that retrieves and processes each participant's physiological data using Lambda, EventBridge, and S3, with tokens and credentials secured in Secrets Manager and KMS, and notifications through SES.",
+      skills: ["AWS Lambda", "EventBridge", "S3", "Secrets Manager", "KMS", "SES"],
+    },
+    {
+      featured: true,
+      area: "data",
+      title: "Wearable-sensor preprocessing pipeline",
+      detail:
+        "Python pipeline that parses raw Fitbit and Google Takeout JSON into analysis-ready datasets: UTC to local time conversion, timestamp alignment, session-window filtering, and structured CSV and pickle outputs.",
+      skills: ["Python", "ETL", "JSON", "Time-series", "Reproducibility"],
+    },
+    {
+      featured: true,
+      area: "data",
+      title: "Study-compliance monitoring",
+      detail:
+        "Classifies every participant-day as compliant or non-compliant from heart-rate timestamps and wear-time coverage, and drives the automated reminder emails that keep the study on track.",
+      skills: ["Python", "Rule-based systems", "Data validation", "AWS SES"],
+    },
+    {
+      featured: true,
+      area: "data",
+      title: "Participant compensation automation",
+      detail:
+        "Python and openpyxl tooling that maps compliance histories into the lab's existing Excel compensation workbook, preserving formatting, finding payment and offboarding boundaries, making backups, and telling missing data apart from days outside the paid window.",
+      skills: ["Python", "openpyxl", "Data reconciliation", "Edge cases"],
+    },
+    {
+      featured: true,
+      area: "analysis",
+      title: "Physiology during robot-guided CBT",
+      detail:
+        "Segmented sessions into cognitive exercises, progressive muscle relaxation, and box breathing, compared physiological patterns across them with windowed sensor data, and checked where wearable signals agreed (or didn't) with momentary self-reported stress.",
+      skills: ["Time-series analysis", "Multimodal data", "Statistics", "Behavioral data"],
+    },
+    {
+      featured: true,
+      area: "analysis",
+      title: "Stress-trajectory forecasting",
+      detail:
+        "Contributed to modeling work that predicts how stress changes during SAR-supported CBT, with the goal of eventually informing how the robot behaves in the moment.",
+      skills: ["Predictive modeling", "Sequential data", "Human-AI systems"],
+    },
+    {
+      featured: true,
+      area: "people",
+      title: "Inductive-deductive thematic analysis",
+      detail:
+        "Analyzed participatory-design sessions with therapists and university students with elevated anxiety: refined themes, organized supporting evidence, reconciled findings with the research questions, and iterated with the team.",
+      skills: ["Qualitative analysis", "Thematic coding", "User research", "Synthesis"],
+    },
+    {
+      featured: true,
+      area: "infra",
+      title: "Interaction Lab website",
+      detail:
+        "Maintain the lab's production website through a Firebase and GitHub pull-request workflow: personnel, research bios, contact and alumni pages, plus debugging an intermittent people-page image-loading issue and an alumni-timeline feature.",
+      skills: ["Firebase", "Git/GitHub", "Pull requests", "Web debugging"],
+    },
+
+    /* ----- everything else, grouped by area ----- */
+    {
+      area: "data",
+      title: "Fitbit API integration",
+      detail:
+        "Retrieved participant data through the Fitbit API with OAuth, and investigated how API, Takeout, and Fitbit-derived data sources differ.",
+      skills: ["REST APIs", "OAuth", "Third-party data"],
+    },
+    {
+      area: "data",
+      title: "Sensor data quality control",
+      detail:
+        "Wear and contact gating, confidence thresholds, invalid-feature detection, and HRV quality gates, producing cleaned raw and Fitbit-derived datasets for analysis.",
+      skills: ["Data QA/QC", "Anomaly detection", "Validation"],
+    },
+    {
+      area: "data",
+      title: "Multimodal alignment with study sessions",
+      detail:
+        "Matched Fitbit measurements to SAR-CBT session timestamps and verified the availability and quality of heart rate, EDA, skin temperature, SpO₂, and derived features for each participant.",
+      skills: ["Time-series sync", "Multimodal data", "Experimental data"],
+    },
+    {
+      area: "data",
+      title: "Tracking down missing sensor data",
+      detail:
+        "Diagnosed where raw versus derived HRV was actually available across Fitbit exports, using find, grep, and archive inspection on Google Takeout datasets.",
+      skills: ["Root-cause analysis", "Linux/CLI", "Data provenance"],
+    },
+    {
+      area: "analysis",
+      title: "Feature engineering for wearables",
+      detail:
+        "Minute buckets, baseline statistics, z-scores, session position, signal aggregation, and exercise-level frames over 30-second and multi-minute windows.",
+      skills: ["Feature engineering", "Normalization", "Python"],
+    },
+    {
+      area: "analysis",
+      title: "Sequential modeling methods explored",
+      detail:
+        "Researched dynamical-systems models, Hidden Markov Models, and recurrent neural networks as candidate approaches for changing physiological and behavioral states.",
+      skills: ["HMMs", "RNNs", "Dynamical systems", "Literature review"],
+    },
+    {
+      area: "people",
+      title: "Stakeholder needs into design requirements",
+      detail:
+        "Turned themes on personalization, engagement, trust and rapport, CBT homework, context awareness, comorbidity, and skill transfer into concrete ways a robot could fit clinical workflows, including where therapists and students wanted different things.",
+      skills: ["Requirements", "UX research", "Product thinking"],
+    },
+    {
+      area: "people",
+      title: "Research-question development",
+      detail:
+        "Helped refine questions about gaps in current CBT practice, therapist agency, and how robots should integrate into treatment instead of replacing it.",
+      skills: ["Problem framing", "Research design"],
+    },
+    {
+      area: "comms",
+      title: "Writing up results",
+      detail:
+        "Turned large amounts of sensor data and qualitative evidence into concise, defensible findings, and kept every claim traceable to the participant evidence behind it.",
+      skills: ["Technical writing", "Evidence management", "Communicating uncertainty"],
+    },
+    {
+      area: "comms",
+      title: "Research visualizations",
+      detail:
+        "Matplotlib figures of Fitbit data across full-day, session, and exercise-level windows, time-aligned and ready for papers.",
+      skills: ["Matplotlib", "Data visualization", "Figure design"],
+    },
+    {
+      area: "comms",
+      title: "Posters & presentations",
+      detail:
+        "Explained SAR-CBT, wearable sensing, and physiological analysis to audiences outside the implementation team.",
+      skills: ["Presentation design", "Research communication"],
+    },
+    {
+      area: "infra",
+      title: "Maintainable research codebase",
+      detail:
+        "Reorganized the lab's code into a pipeline architecture with separate ingestion, alignment, filtering, visualization, diagnostics, and configuration, versioned with Git branches and pull requests.",
+      skills: ["Software architecture", "Modular design", "Git"],
+    },
+    {
+      area: "infra",
+      title: "Shared Linux & GPU computing",
+      detail:
+        "Run pipelines and manage Python environments on the lab's Blackwell server, and set up an audio-video transcription pipeline with FFmpeg, CUDA, and Hugging Face, diagnosing missing recordings before transcription.",
+      skills: ["Linux", "CUDA", "FFmpeg", "Hugging Face"],
+    },
+    {
+      area: "infra",
+      title: "Study operations & on-call",
+      detail:
+        "Help run the technical side of multiple concurrent studies, including on-call coverage and coordinating with researchers and clinicians when issues come up.",
+      skills: ["Ownership", "Troubleshooting", "Cross-functional teamwork"],
+    },
+  ] satisfies ResearchItem[] as ResearchItem[],
 };
 
 /* ---------------------------------------------------------------- projects */
@@ -285,6 +479,7 @@ export const projects: Project[] = [
     highlights: ["Created and presented a full marketing plan for a hypothetical public release"],
     mattered:
       "Every houseplant guide assumes an average climate that nobody lives in. Sproutsy made the advice local, visual, and hard to ignore.",
+    github: "https://github.com/reyna2323/Sproutsy_React_App",
   },
   {
     id: "recycode",
@@ -323,12 +518,14 @@ export const projects: Project[] = [
 /* ------------------------------------------------------------------ skills */
 
 export const skills = {
-  intro: "What I reach for, grouped by where it shows up in my work.",
+  intro: "What I reach for, grouped by where it shows up in my work. Most of it gets daily use in the lab.",
   groups: [
     { label: "Languages", items: ["Python", "Java", "C/C++", "TypeScript", "JavaScript", "SQL", "HTML", "CSS"] },
-    { label: "ML & data", items: ["PyTorch", "TensorFlow", "Statistical modeling", "Regression", "Feature engineering"] },
-    { label: "Frameworks & platforms", items: ["React", "React Native", "Firebase", "Supabase", "AWS SES", "REST APIs"] },
-    { label: "Tools", items: ["Linux", "Git", "LaTeX", "Vim"] },
+    { label: "Cloud & data engineering", items: ["AWS Lambda", "EventBridge", "S3", "Secrets Manager", "KMS", "SES", "REST APIs", "OAuth", "openpyxl"] },
+    { label: "ML & data science", items: ["PyTorch", "TensorFlow", "Time-series analysis", "Feature engineering", "Statistical modeling", "Matplotlib"] },
+    { label: "Research methods", items: ["Thematic analysis", "Participatory design", "Multimodal sensor data", "Scientific writing"] },
+    { label: "Frameworks & platforms", items: ["React", "React Native", "Firebase", "Supabase", "Hugging Face"] },
+    { label: "Tools", items: ["Linux", "Git/GitHub", "CUDA", "FFmpeg", "LaTeX", "Vim"] },
     { label: "Hardware", items: ["Arduino", "Embedded systems", "PC builds & upgrades", "Broadcast AV equipment"] },
   ],
 };
@@ -356,12 +553,29 @@ export const contact = {
   ],
 };
 
-/* terminal commands auto-typed on the desk laptop */
-export const terminalScript = [
-  "ssh reyna@lab",
-  "python hr_model.py",
-  "python forecast.py",
-  "npx expo start",
-  "git push origin main",
-  "python kepler.py",
+/* terminal commands auto-typed on the desk laptop, each with the real
+   result it "prints" (all drawn from the résumé) */
+export const terminalScript: { cmd: string; out: string }[] = [
+  { cmd: "ssh reyna@lab", out: "connected: USC Interaction Lab ♡" },
+  { cmd: "python hr_model.py", out: "✓ HR · EDA · temp · SpO₂ aligned" },
+  { cmd: "python forecast.py", out: "✓ stress trajectories modeled" },
+  { cmd: "npx expo start", out: "✓ Recycode app is live" },
+  { cmd: "git push origin main", out: "✓ shipped, 5,000+ lbs donated" },
+  { cmd: "python kepler.py", out: "✓ orbital periods: 92% accuracy" },
 ];
+
+/* readouts that cycle on the oscilloscope screen, like live measurements */
+export const scopeReadouts = ["3 papers submitted", "n≈20 participants", "6 AWS services", "HR·EDA·TEMP·SpO₂"];
+
+/* at-a-glance facts on the little index card that appears when you hover a
+   desk object: the headline of each page before you open it */
+export const peeks: Record<PageId, string[]> = {
+  start: ["who I am + a map of this desk", "7 pages, research first"],
+  research: ["3 manuscripts: CHI, HRI & IEEE T-RO", "NIH-funded study, ~20 participants", "6-service AWS data pipeline"],
+  experience: ["6 roles, 2 current", "USC Interaction Lab + USC DEN", "research · software · teaching · hardware"],
+  projects: ["Sproutsy: AI plant-care app", "Recycode: 5,000+ lbs of clothing donated", "exoplanet periods at 92% accuracy"],
+  skills: ["Python · C/C++ · TypeScript · Java", "AWS · PyTorch · React Native", "7 toolkits, from code to hardware"],
+  about: ["USC CECS + Math minor, class of 2028", "CS TA, Arduino curriculum, STEM camp", "if I can't draw it, I don't know it yet"],
+  awards: ["National Merit Scholarship Winner", "BPA national finalist: cybersecurity", "+ 2 certifications"],
+  contact: ["reynapat@usc.edu", "github.com/reyna2323", "in/reynapatelegv"],
+};

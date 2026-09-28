@@ -38,6 +38,7 @@
   --ink-soft: #4a3350; /* body copy */
   --ink-muted: #5f4569; /* captions, labels, meta */
   --rose-ink: #b52f76; /* accent links/labels on paper (AA-safe rose) */
+  --rose-ink-blush: #a0286a; /* rose accent on blush sticky-note paper (5.1:1) */
   --copper-ink: #7d4b2c; /* accent labels on paper (AA-safe copper) */
 
   /* -- text tokens: on DARK glass / schematic surfaces -- */
@@ -74,6 +75,7 @@
   --color-ink-soft: var(--ink-soft);
   --color-ink-muted: var(--ink-muted);
   --color-rose-ink: var(--rose-ink);
+  --color-rose-ink-blush: var(--rose-ink-blush);
   --color-copper-ink: var(--copper-ink);
   --color-glass-strong: var(--glass-strong);
   --color-glass-soft: var(--glass-soft);
@@ -120,6 +122,47 @@ body {
 .panel-scroll::-webkit-scrollbar-thumb {
   background: var(--pink);
   border-radius: 999px;
+}
+
+/* Surface-matched ink. The manila folder darkens toward the bottom and
+   blush paper is pinker than notebook paper, so pages drawn on them swap
+   in deeper shades of the same accents (all ≥ 4.5:1 on the darkest spot). */
+.surface-folder {
+  --rose-ink: #7c1b53; /* 4.74:1 on folder-dark */
+  --copper-ink: #5e3820; /* 4.92:1 on folder-dark */
+  --ink-muted: #4d3556; /* 5.18:1 on folder-dark */
+}
+.surface-blush {
+  --rose-ink: var(--rose-ink-blush); /* 5.1:1 on blush */
+}
+
+/* =====================================================================
+   DESK UNIT — size desk objects in var(--su), never raw vw.
+   It equals 1vw on the 16:10 screen the desk was composed on, and
+   shrinks with the height on short, wide windows (laptops with a
+   bookmarks bar, split screens) so objects never pile into each
+   other or slide under the dock.
+   ===================================================================== */
+:root {
+  --su: min(1vw, 1.6vh, 18px);
+}
+
+/* Inside the desk the type scale rides the same unit, so the writing on
+   the notebook, laptop and notes grows and shrinks with the object it's
+   drawn on (sizes match the 1440px design exactly; floors keep it legible). */
+.desk-scale .text-display { font-size: max(1.1rem, calc(var(--su) * 3.06)); }
+.desk-scale .text-hand-xl { font-size: max(0.95rem, calc(var(--su) * 2.33)); }
+.desk-scale .text-hand-lg { font-size: max(0.78rem, calc(var(--su) * 1.61)); }
+.desk-scale .text-hand-md { font-size: max(0.66rem, calc(var(--su) * 1.32)); }
+.desk-scale .text-hand-sm { font-size: max(0.58rem, calc(var(--su) * 1.09)); }
+.desk-scale .text-desk-label { font-size: max(0.52rem, calc(var(--su) * 1.06)); }
+.desk-scale .text-desk-micro { font-size: max(0.42rem, calc(var(--su) * 0.755)); }
+/* object tags are navigation, so they keep a readable floor */
+.desk-scale .desk-tag { font-size: max(0.9rem, calc(var(--su) * 1.32)); }
+/* on small desks that floor outgrows the gap between the trophy shelf and
+   the envelope, so the shelf rises a little to keep their tags apart */
+@media (max-width: 1100px), (max-height: 660px) {
+  .desk-scale .desk-awards { top: 37%; }
 }
 
 /* =====================================================================
@@ -452,6 +495,72 @@ body {
 }
 
 /* calm everything down for reduced-motion users */
+/* desk-object pencil circle: draws in on hover / keyboard focus */
+.scribble path {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  opacity: 0;
+  filter: drop-shadow(0 0 4px rgba(236, 143, 189, 0.6));
+  transition: stroke-dashoffset 0.6s cubic-bezier(0.6, 0, 0.3, 1), opacity 0.2s;
+}
+.group:hover > .scribble path,
+.group:focus-visible > .scribble path {
+  stroke-dashoffset: 0;
+  opacity: 0.85;
+}
+
+/* desk-object peek cards: only for real hover pointers (and keyboard focus),
+   after a short pause so they don't flicker as the mouse passes over */
+.peek {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.18s ease, visibility 0s linear 0.18s;
+}
+@media (hover: hover) {
+  .group:hover > .peek {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.25s ease 0.35s, visibility 0s linear 0.35s;
+  }
+}
+.group:focus-visible > .peek {
+  opacity: 1;
+  visibility: visible;
+  transition: opacity 0.25s ease 0.1s, visibility 0s linear 0.1s;
+}
+/* the object being looked at rises above its neighbours so its card isn't covered */
+.desk-scale > :has(.group:hover),
+.desk-scale > :has(.group:focus-visible) {
+  z-index: 30;
+}
+
+/* hand-drawn squiggle that draws in under handwritten section headings */
+.hand-underline::after {
+  content: "";
+  display: block;
+  width: min(100%, 7.5em);
+  height: 7px;
+  margin-top: 1px;
+  background-color: currentColor;
+  opacity: 0.55;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 7'%3E%3Cpath d='M0 4.5 C4 1 8 1 12 4 S20 7 24 3.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center / 24px 7px;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 7'%3E%3Cpath d='M0 4.5 C4 1 8 1 12 4 S20 7 24 3.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center / 24px 7px;
+  animation: underline-draw 0.9s cubic-bezier(0.6, 0, 0.3, 1) 0.35s both;
+}
+/* a line of text arriving: terminal output, scope readouts */
+.anim-fade-up {
+  animation: fade-up 0.45s ease-out both;
+}
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(3px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes underline-draw {
+  from { clip-path: inset(0 100% 0 0); }
+  to { clip-path: inset(0 0 0 0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim-float,
   .anim-breathe,
@@ -481,5 +590,14 @@ body {
   .shimmer::before {
     animation: none;
     opacity: 0;
+  }
+  .scribble path {
+    transition: none;
+  }
+  .anim-fade-up {
+    animation: none;
+  }
+  .hand-underline::after {
+    animation: none;
   }
 }

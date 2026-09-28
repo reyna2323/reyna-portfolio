@@ -2,13 +2,19 @@
 
 import { useEffect, useState } from "react";
 
+export interface TypedEntry {
+  cmd: string;
+  out?: string;
+}
+
 interface Typed {
-  history: string[];
+  history: TypedEntry[];
   current: string;
 }
 
-/** Auto-types each script line character by character, keeping a short history. */
-export function useTypedLines(script: string[], enabled: boolean): Typed {
+/** Auto-types each command character by character, then "runs" it (its output
+ *  line appears), keeping a short history. */
+export function useTypedLines(script: TypedEntry[], enabled: boolean): Typed {
   const [state, setState] = useState<Typed>({ history: [], current: "" });
 
   useEffect(() => {
@@ -18,20 +24,20 @@ export function useTypedLines(script: string[], enabled: boolean): Typed {
     let timer: ReturnType<typeof setTimeout>;
 
     const tick = () => {
-      const full = script[line % script.length];
-      if (char <= full.length) {
-        const current = full.slice(0, char);
+      const entry = script[line % script.length];
+      if (char <= entry.cmd.length) {
+        const current = entry.cmd.slice(0, char);
         setState((s) => ({ ...s, current }));
         char += 1;
         timer = setTimeout(tick, 50 + Math.random() * 60);
       } else {
         setState((s) => ({
-          history: [...s.history, full].slice(-2),
+          history: [...s.history, entry].slice(-2),
           current: "",
         }));
         line += 1;
         char = 0;
-        timer = setTimeout(tick, 2200);
+        timer = setTimeout(tick, 2600);
       }
     };
     timer = setTimeout(tick, 900);

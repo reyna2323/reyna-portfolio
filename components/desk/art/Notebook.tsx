@@ -121,7 +121,7 @@ export function NotebookArt() {
           {/* left-margin vertical label */}
           <p
             className="pointer-events-none absolute font-hand text-rose-ink"
-            style={{ left: "0.4%", top: "18%", fontSize: "max(4px, 0.3vw)", opacity: 0.3, writingMode: "vertical-rl", transform: "rotate(180deg)", letterSpacing: "0.12em" }}
+            style={{ left: "0.4%", top: "18%", fontSize: "max(4px, calc(var(--su) * 0.3))", opacity: 0.3, writingMode: "vertical-rl", transform: "rotate(180deg)", letterSpacing: "0.12em" }}
             aria-hidden
           >spring &apos;26 · vol. II</p>
 
@@ -140,7 +140,7 @@ export function NotebookArt() {
                 <p className="font-hand text-desk-label leading-tight text-ink-muted">B.S. Computer Engineering</p>
                 <p className="font-hand text-desk-label leading-tight text-ink-muted">&amp; Computer Science</p>
                 <p className="font-hand text-desk-label text-ink-muted">Minor in Mathematics</p>
-                <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.50 }}>└ yes, all three ✓</p>
+                <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.72 }}>└ yes, all three ✓</p>
               </div>
             </div>
 
@@ -149,8 +149,8 @@ export function NotebookArt() {
               <p className="font-hand text-desk-label text-rose-ink" style={{ opacity: 0.78 }}>currently →</p>
               <p className="font-hand text-desk-micro text-ink-muted">· SAR robot + stress trajectory ML</p>
               <p className="font-hand text-desk-micro text-ink-muted">· exoplanet paper draft v2</p>
-              <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.58 }}>· this portfolio (meta, I know)</p>
-              <p className="font-hand text-desk-micro text-ink-muted line-through" style={{ opacity: 0.42 }}>· do it all in assembly <span className="text-copper-ink no-underline">(so much no)</span></p>
+              <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.8 }}>· this portfolio (meta, I know)</p>
+              <p className="font-hand text-desk-micro text-ink-muted line-through" style={{ opacity: 0.65 }}>· do it all in assembly <span className="text-copper-ink no-underline">(so much no)</span></p>
             </div>
 
             {/* circuit-heartbeat with a PROPER heart shape */}
@@ -252,10 +252,10 @@ export function NotebookArt() {
                 <div className="absolute h-[2%] w-[2%] rounded-full" style={{ top: "79%", left: "28%", background: "rgba(246,210,228,0.78)", filter: "blur(0.5px)" }} />
                 <div className="absolute h-[1.5%] w-[1.5%] rounded-full bg-white/64" style={{ top: "9%", left: "51%" }} />
               </div>
-              <p className="mt-[6%] text-center font-hand text-ink-muted" style={{ fontSize: "max(5.5px, 0.44vw)", lineHeight: 1.3 }}>
+              <p className="mt-[6%] text-center font-hand text-ink-muted" style={{ fontSize: "max(5.5px, calc(var(--su) * 0.44))", lineHeight: 1.3 }}>
                 NGC 224 · Andromeda
               </p>
-              <p className="text-center font-hand text-ink-muted" style={{ fontSize: "max(4.5px, 0.37vw)", opacity: 0.75 }}>
+              <p className="text-center font-hand text-ink-muted" style={{ fontSize: "max(4.5px, calc(var(--su) * 0.37))", opacity: 0.75 }}>
                 2.537 Mly away
               </p>
             </div>
@@ -331,7 +331,7 @@ export function NotebookArt() {
           {/* sparkle */}
           <span
             className="pointer-events-none absolute text-orchid anim-sparkle"
-            style={{ right: "6%", top: "8%", fontSize: "max(7px, 0.5vw)", opacity: 0.38, animationDelay: "1.3s" }}
+            style={{ right: "6%", top: "8%", fontSize: "max(7px, calc(var(--su) * 0.5))", opacity: 0.38, animationDelay: "1.3s" }}
             aria-hidden
           >✦</span>
         </div>
@@ -362,14 +362,14 @@ export function NotebookArt() {
           {/* left-margin vertical label */}
           <p
             className="pointer-events-none absolute font-hand text-orchid"
-            style={{ left: "0.5%", top: "13%", fontSize: "max(4px, 0.3vw)", opacity: 0.26, writingMode: "vertical-rl", transform: "rotate(180deg)", letterSpacing: "0.1em" }}
+            style={{ left: "0.5%", top: "13%", fontSize: "max(4px, calc(var(--su) * 0.3))", opacity: 0.26, writingMode: "vertical-rl", transform: "rotate(180deg)", letterSpacing: "0.1em" }}
             aria-hidden
           >· lab notes ·</p>
 
           {/* tiny margin joke — the one sliver of open space beside the heading */}
           <p
             className="pointer-events-none absolute rotate-[3deg] font-hand text-ink-muted"
-            style={{ left: "62%", top: "8%", width: "15%", fontSize: "max(4.5px, 0.34vw)", lineHeight: 1.2, opacity: 0.55 }}
+            style={{ left: "62%", top: "8%", width: "15%", fontSize: "max(4.5px, calc(var(--su) * 0.34))", lineHeight: 1.2, opacity: 0.55 }}
             aria-hidden
           >
             ideas &gt; sleep
@@ -412,15 +412,15 @@ export function NotebookArt() {
             <ul className="mt-[3%] space-y-[2%] font-hand text-hand-sm leading-snug">
               <li className="flex items-start gap-[2%]">
                 <span className="shrink-0 text-orchid">☑</span>
-                <span className="text-ink-muted line-through" style={{ opacity: 0.52 }}>flash Pi firmware + GPIO test</span>
+                <span className="text-ink-muted line-through" style={{ opacity: 0.72 }}>flash Pi firmware + GPIO test</span>
               </li>
               <li className="flex items-start gap-[2%]">
                 <span className="shrink-0 text-orchid">☑</span>
-                <span className="text-ink-muted line-through" style={{ opacity: 0.52 }}>train HRV → stress trajectory</span>
+                <span className="text-ink-muted line-through" style={{ opacity: 0.72 }}>train HRV → stress trajectory</span>
               </li>
               <li className="flex items-start gap-[2%]">
                 <span className="shrink-0 text-orchid">☑</span>
-                <span className="text-ink-muted line-through" style={{ opacity: 0.52 }}>debug I2C addr <span className="font-mono text-desk-micro text-copper-ink">0x68</span></span>
+                <span className="text-ink-muted line-through" style={{ opacity: 0.72 }}>debug I2C addr <span className="font-mono text-desk-micro text-copper-ink">0x68</span></span>
               </li>
               <li className="flex items-start gap-[2%]">
                 <span className="shrink-0 text-ink-muted">☐</span>
@@ -432,7 +432,7 @@ export function NotebookArt() {
               </li>
               <li className="text-rose-ink">→ click anything on my desk!</li>
             </ul>
-            <p className="mt-[1.5%] font-hand text-desk-micro italic text-orchid" style={{ opacity: 0.58 }}>
+            <p className="mt-[1.5%] font-hand text-desk-micro italic text-orchid" style={{ opacity: 0.8 }}>
               ✦ everything is figure-outable
             </p>
 
@@ -440,7 +440,7 @@ export function NotebookArt() {
             <div className="mt-[3.5%] border-l border-copper/25 pl-[3%]">
               <p className="font-hand text-desk-micro italic text-ink-muted">f(x) = σ(Wx + b)</p>
               <p className="font-hand text-desk-micro italic text-ink-muted">∂L/∂θ ← gradient descent</p>
-              <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.48 }}>← see loss curve →</p>
+              <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.7 }}>← see loss curve →</p>
             </div>
 
             {/* Kepler's transit depth note — tiny reminder */}
@@ -448,10 +448,10 @@ export function NotebookArt() {
               className="mt-[3%] w-[55%] -rotate-[1deg] rounded-sm p-[2%] shadow-sm"
               style={{ background: "rgba(246,211,227,0.68)" }}
             >
-              <p className="font-hand text-ink-muted" style={{ fontSize: "max(5px, 0.38vw)", lineHeight: 1.3 }}>
+              <p className="font-hand text-ink-muted" style={{ fontSize: "max(5px, calc(var(--su) * 0.38))", lineHeight: 1.3 }}>
                 transit depth = (Rp/Rs)²
               </p>
-              <p className="font-hand text-ink-muted" style={{ fontSize: "max(4px, 0.32vw)" }}>
+              <p className="font-hand text-ink-muted" style={{ fontSize: "max(4px, calc(var(--su) * 0.32))" }}>
                 ↑ Kepler reminder
               </p>
             </div>
@@ -505,8 +505,8 @@ export function NotebookArt() {
             <div className="mt-auto flex items-end justify-between">
               <div>
                 <p className="font-hand text-desk-label text-ink-muted">est. USC · CECS</p>
-                <p className="font-hand text-desk-micro text-ink-muted" style={{ opacity: 0.52 }}>* scope beats printf debug</p>
-                <p className="font-hand text-desk-micro text-ink-muted" style={{ opacity: 0.42 }}>☕ this week: |||| |</p>
+                <p className="font-hand text-desk-micro text-ink-muted" style={{ opacity: 0.72 }}>* scope beats printf debug</p>
+                <p className="font-hand text-desk-micro text-ink-muted" style={{ opacity: 0.65 }}>☕ this week: |||| |</p>
               </div>
               {/* robot doodle */}
               <svg viewBox="0 0 44 44" className="w-[22%]" aria-hidden>
@@ -553,7 +553,7 @@ export function NotebookArt() {
             className="anim-tag-swing pointer-events-none absolute -right-[2%] bottom-[3%] w-[15%] rotate-[3deg] rounded-sm p-[3%] shadow-sm"
             style={{ background: "rgba(198,232,210,0.82)", transformOrigin: "top center" }}
           >
-            <p className="font-hand text-ink-muted" style={{ fontSize: "max(4.5px, 0.36vw)", lineHeight: 1.25 }}>
+            <p className="font-hand text-ink-muted" style={{ fontSize: "max(4.5px, calc(var(--su) * 0.36))", lineHeight: 1.25 }}>
               buy more solder ⚡
             </p>
           </div>
@@ -563,7 +563,7 @@ export function NotebookArt() {
             className="pointer-events-none absolute -rotate-[14deg] rounded-full border-2 px-[2%] py-[0.5%]"
             style={{ right: "8%", top: "9%", borderColor: "rgba(178,132,80,0.55)", opacity: 0.72 }}
           >
-            <p className="font-hand text-copper-ink" style={{ fontSize: "max(4.5px, 0.36vw)", letterSpacing: "0.05em" }}>
+            <p className="font-hand text-copper-ink" style={{ fontSize: "max(4.5px, calc(var(--su) * 0.36))", letterSpacing: "0.05em" }}>
               verified ✓
             </p>
           </div>
@@ -571,12 +571,12 @@ export function NotebookArt() {
           {/* sparkle glyphs */}
           <span
             className="pointer-events-none absolute text-orchid anim-sparkle"
-            style={{ left: "7%", top: "6%", fontSize: "max(7px, 0.52vw)", opacity: 0.44, animationDelay: "0.9s" }}
+            style={{ left: "7%", top: "6%", fontSize: "max(7px, calc(var(--su) * 0.52))", opacity: 0.44, animationDelay: "0.9s" }}
             aria-hidden
           >✦</span>
           <span
             className="pointer-events-none absolute text-lavender anim-sparkle"
-            style={{ right: "5%", bottom: "14%", fontSize: "max(6px, 0.43vw)", opacity: 0.36, animationDelay: "2.2s" }}
+            style={{ right: "5%", bottom: "14%", fontSize: "max(6px, calc(var(--su) * 0.43))", opacity: 0.36, animationDelay: "2.2s" }}
             aria-hidden
           >✧</span>
           <span
@@ -592,7 +592,7 @@ export function NotebookArt() {
         {Array.from({ length: 9 }).map((_, i) => (
           <span
             key={i}
-            className="block h-[2.5%] min-h-1.5 w-[1.6vw] rounded-full border-2 border-copper bg-deepplum/20 shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
+            className="block h-[2.5%] min-h-1.5 w-[calc(var(--su)*1.6)] rounded-full border-2 border-copper bg-deepplum/20 shadow-[0_1px_2px_rgba(0,0,0,0.4)]"
           />
         ))}
       </div>

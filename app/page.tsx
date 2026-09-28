@@ -3,12 +3,14 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { site, pageOrder, isPageId, type PageId } from "@/lib/content";
 import { useMediaQuery } from "@/lib/useMediaQuery";
-import { PageNavProvider, writeHash } from "@/lib/pageNav";
+import { PageNavProvider, syncTitle, writeHash } from "@/lib/pageNav";
 import { DeskScene } from "@/components/desk/DeskScene";
 import { MobileDashboard } from "@/components/desk/MobileDashboard";
 import { Dock } from "@/components/desk/Dock";
 import { Entrance } from "@/components/desk/Entrance";
 import { PanelManager } from "@/components/panels/PanelManager";
+import { Constellation } from "@/components/desk/Constellation";
+import { markVisited } from "@/lib/visited";
 
 function hashPage(): PageId | null {
   const h = window.location.hash.slice(1);
@@ -16,7 +18,8 @@ function hashPage(): PageId | null {
 }
 
 export default function Home() {
-  const isMobile = useMediaQuery("(max-width: 768px)");
+  // narrow screens, plus phones turned sideways (too short for the desk + a page)
+  const isMobile = useMediaQuery("(max-width: 768px), (max-height: 520px)");
   const [entranceDone, setEntranceDone] = useState(false);
   const [activePanel, setActivePanel] = useState<PageId | null>(null);
   const [minimized, setMinimized] = useState(false);
@@ -36,6 +39,17 @@ export default function Home() {
   const restorePanel = useCallback(() => setMinimized(false), []);
   const nav = useMemo(() => ({ open: openPanel, close: closePanel }), [openPanel, closePanel]);
 
+  // Resizing from the phone layout back to the desk: pick up whichever page
+  // was open on the phone (the hash) instead of a stale one from before.
+  const [wasMobile, setWasMobile] = useState(isMobile);
+  if (wasMobile !== isMobile) {
+    setWasMobile(isMobile);
+    if (!isMobile && entranceDone) {
+      setActivePanel(hashPage());
+      setMinimized(false);
+    }
+  }
+
   // First visit lands on the Start page once the cover opens; a shared
   // link like /#research goes straight to that page instead.
   // (isMobile is read through a ref so this callback stays stable and the
@@ -48,6 +62,12 @@ export default function Home() {
     setEntranceDone(true);
     if (!isMobileRef.current) openPanel(hashPage() ?? "start");
   }, [openPanel]);
+
+  useEffect(() => {
+    if (isMobile) return;
+    syncTitle(minimized ? null : activePanel);
+    markVisited(activePanel);
+  }, [isMobile, activePanel, minimized]);
 
   // typed or pasted hash changes (and back/forward between them)
   useEffect(() => {
@@ -90,7 +110,7 @@ export default function Home() {
       {!entranceDone && <Entrance onDone={onEntranceDone} />}
 
       {isMobile ? (
-        <MobileDashboard />
+        <MobileDashboard ready={entranceDone} />
       ) : (
         <PageNavProvider value={nav}>
           <header className="fixed left-6 top-5 z-30">
@@ -112,10 +132,14 @@ export default function Home() {
               </button>
             </div>
             <p className="mt-1 text-desk-label tracking-[0.08em] text-glass-muted" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.75)" }}>
-              computer engineering &amp; CS @ USC
+              researcher @ USC Interaction Lab
             </p>
           </header>
           <DeskScene onOpen={openPanel} />
+          {/* the reading constellation, up in the open sky above the notebook */}
+          <div className="pointer-events-none fixed left-1/2 top-3 z-20 -translate-x-1/2">
+            <Constellation current={minimized ? null : activePanel} />
+          </div>
           <Dock activePanel={minimized ? null : activePanel} onSelect={handleDockSelect} />
           <PanelManager
             activePanel={activePanel}

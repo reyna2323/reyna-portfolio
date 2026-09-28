@@ -1,9 +1,24 @@
-/** Pearl-lavender oscilloscope with a continuously scrolling waveform. */
+"use client";
+
+import { useEffect, useState } from "react";
+import { scopeReadouts } from "@/lib/content";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
+
+/** Pearl-lavender oscilloscope with a continuously scrolling waveform, and a
+ *  readout that cycles through the research numbers like live measurements. */
 
 const WAVE =
   "M0 44 H14 L20 30 L28 56 L34 22 L40 44 H58 Q64 12 70 44 H92 L98 34 L104 50 L110 44 H126 Q132 64 138 44 H160";
 
 export function OscilloscopeArt() {
+  const reduced = usePrefersReducedMotion();
+  const [reading, setReading] = useState(0);
+  useEffect(() => {
+    if (reduced) return;
+    const id = setInterval(() => setReading((r) => (r + 1) % scopeReadouts.length), 3400);
+    return () => clearInterval(id);
+  }, [reduced]);
+
   return (
     <div className="relative aspect-[5/4.1] w-full">
       <div className="absolute inset-x-3 -bottom-1.5 h-4 rounded-[50%] bg-black/40 blur-md" />
@@ -12,14 +27,14 @@ export function OscilloscopeArt() {
         <div className="mb-[3%] flex items-center justify-between px-[2%]">
           <span className="font-hand text-desk-label leading-none text-ink-strong">reyna·scope 9000</span>
           <span
-            className="anim-led h-[0.5vw] w-[0.5vw] rounded-full bg-led"
+            className="anim-led h-[calc(var(--su)*0.5)] w-[calc(var(--su)*0.5)] rounded-full bg-led"
             style={{ filter: "drop-shadow(0 0 4px var(--led))" }}
           />
         </div>
         {/* tiny heart sticker, half-peeled corner */}
         <span
           className="anim-sparkle pointer-events-none absolute left-[3%] top-[2%] text-hotpink"
-          style={{ fontSize: "max(7px, 0.5vw)", animationDelay: "2.6s" }}
+          style={{ fontSize: "max(7px, calc(var(--su) * 0.5))", animationDelay: "2.6s" }}
           aria-hidden
         >
           ♡
@@ -47,21 +62,25 @@ export function OscilloscopeArt() {
             </g>
           </svg>
           <span className="absolute right-1 top-0.5 font-mono text-desk-micro text-glass-muted">CH1 · 2ms</span>
-          <span className="anim-flicker absolute left-1 top-0.5 font-mono text-desk-micro text-mintled">Vpp 3.3V</span>
+          <span className="anim-flicker absolute left-1 top-0.5 font-mono text-desk-micro text-mintled">
+            <span key={reading} className="anim-fade-up block">
+              {scopeReadouts[reading]}
+            </span>
+          </span>
         </div>
         {/* knobs */}
         <div className="mt-[4%] flex items-center justify-between px-[3%]">
           <div className="flex gap-[8%] gap-x-2">
-            <span className="relative block h-[1.7vw] w-[1.7vw] rounded-full bg-gradient-to-br from-rosegold to-copper shadow-[inset_0_-2px_3px_rgba(0,0,0,0.3)]">
+            <span className="relative block h-[calc(var(--su)*1.7)] w-[calc(var(--su)*1.7)] rounded-full bg-gradient-to-br from-rosegold to-copper shadow-[inset_0_-2px_3px_rgba(0,0,0,0.3)]">
               <span className="absolute left-1/2 top-[12%] h-[36%] w-[10%] -translate-x-1/2 rounded bg-deepplum/60" />
             </span>
-            <span className="relative block h-[1.7vw] w-[1.7vw] rotate-45 rounded-full bg-gradient-to-br from-rosegold to-copper shadow-[inset_0_-2px_3px_rgba(0,0,0,0.3)]">
+            <span className="relative block h-[calc(var(--su)*1.7)] w-[calc(var(--su)*1.7)] rotate-45 rounded-full bg-gradient-to-br from-rosegold to-copper shadow-[inset_0_-2px_3px_rgba(0,0,0,0.3)]">
               <span className="absolute left-1/2 top-[12%] h-[36%] w-[10%] -translate-x-1/2 rounded bg-deepplum/60" />
             </span>
           </div>
           <div className="flex flex-col gap-[3px]">
-            <span className="h-[0.35vw] w-[2.4vw] rounded-full bg-plum/35" />
-            <span className="h-[0.35vw] w-[2.4vw] rounded-full bg-plum/35" />
+            <span className="h-[calc(var(--su)*0.35)] w-[calc(var(--su)*2.4)] rounded-full bg-plum/35" />
+            <span className="h-[calc(var(--su)*0.35)] w-[calc(var(--su)*2.4)] rounded-full bg-plum/35" />
           </div>
         </div>
       </div>

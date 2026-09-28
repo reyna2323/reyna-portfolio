@@ -1,7 +1,7 @@
 "use client";
 
 import { createContext, useContext } from "react";
-import type { PageId } from "@/lib/content";
+import { pageMeta, site, type PageId } from "@/lib/content";
 
 interface PageNav {
   open: (id: PageId) => void;
@@ -48,4 +48,12 @@ export function PageLink({
 export function writeHash(id: PageId | null) {
   const url = id ? `#${id}` : window.location.pathname + window.location.search;
   window.history.replaceState(null, "", url);
+}
+
+let baseTitle: string | null = null;
+
+/** Names the open page in the browser tab ("Research · Reyna Patel"), so tabs, history and bookmarks say where they go. */
+export function syncTitle(id: PageId | null) {
+  baseTitle ??= document.title;
+  document.title = id && id !== "start" ? `${pageMeta(id).label} · ${site.name}` : baseTitle;
 }

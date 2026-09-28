@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useReducedMotion, useTransform } from "framer-motion";
+import { motion, useTransform } from "framer-motion";
 import { usePointer } from "./Parallax";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 interface Bokeh {
   left: number;
@@ -118,7 +119,7 @@ export function Atmosphere() {
     [],
   );
 
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const { px, py } = usePointer();
   const glowX = useTransform(px, (v) => `${50 + v * 38}%`);
   const glowY = useTransform(py, (v) => `${50 + v * 38}%`);

@@ -62,17 +62,19 @@ export function ProjectArtifact({ project }: { project: Project }) {
       <dl className="mt-3 space-y-2 text-sm">
         <div>
           <dt className={`text-xs font-semibold uppercase tracking-wide ${META[fam]}`}>What I built</dt>
-          <dd className={BODY[fam]}>{project.built}</dd>
-          {project.highlights && project.highlights.length > 0 && (
-            <ul className="mt-1.5 space-y-1">
-              {project.highlights.map((h) => (
-                <li key={h} className={`flex gap-1.5 text-sm ${BODY[fam]}`}>
-                  <span className={`mt-1.5 h-1 w-1 shrink-0 rounded-full ${fam === "light" ? "bg-copper" : "bg-mintled"}`} />
-                  {h}
-                </li>
-              ))}
-            </ul>
-          )}
+          <dd className={BODY[fam]}>
+            {project.built}
+            {project.highlights && project.highlights.length > 0 && (
+              <ul className="mt-1.5 space-y-1">
+                {project.highlights.map((h) => (
+                  <li key={h} className={`flex gap-1.5 text-sm ${BODY[fam]}`}>
+                    <span className={`mt-1.5 h-1 w-1 shrink-0 rounded-full ${fam === "light" ? "bg-copper" : "bg-mintled"}`} />
+                    {h}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </dd>
         </div>
         <div>
           <dt className={`text-xs font-semibold uppercase tracking-wide ${META[fam]}`}>Why it mattered</dt>
@@ -90,6 +92,7 @@ export function ProjectArtifact({ project }: { project: Project }) {
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors ${BUTTON[fam]}`}
             >
               <GitBranch size={12} aria-hidden /> GitHub
+              <span className="sr-only"> for {project.title} (opens in a new tab)</span>
             </a>
           )}
           {project.demo && (
@@ -100,6 +103,7 @@ export function ProjectArtifact({ project }: { project: Project }) {
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors ${BUTTON[fam]}`}
             >
               <ExternalLink size={12} aria-hidden /> Demo
+              <span className="sr-only"> of {project.title} (opens in a new tab)</span>
             </a>
           )}
         </div>

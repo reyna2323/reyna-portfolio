@@ -7,9 +7,9 @@ import {
   useMotionValue,
   useSpring,
   useTransform,
-  useReducedMotion,
   type MotionValue,
 } from "framer-motion";
+import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 interface PointerCtx {
   px: MotionValue<number>; // -1 … 1
@@ -64,7 +64,7 @@ export function ParallaxLayer({
   children: React.ReactNode;
 }) {
   const { px, py } = usePointer();
-  const reduced = useReducedMotion();
+  const reduced = usePrefersReducedMotion();
   const factor = reduced ? 0 : depth * 9;
   const x = useTransform(px, (v) => v * -factor);
   const y = useTransform(py, (v) => v * -factor);

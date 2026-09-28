@@ -27,7 +27,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Reyna Patel's Website",
   description:
-    "Reyna Patel builds complete systems: hardware, embedded, full-stack software, and machine learning. USC Computer Engineering & Computer Science. Explore her interactive engineering workbench.",
+    "Reyna Patel: undergraduate researcher at the USC Viterbi Interaction Lab building wearable-data pipelines, physiological ML, and human-centered research for a socially assistive robot. USC Computer Engineering & Computer Science, class of 2028.",
 };
 
 export default function RootLayout({

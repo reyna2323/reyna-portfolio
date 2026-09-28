@@ -18,3 +18,10 @@ export function useMediaQuery(query: string): boolean {
     () => false,
   );
 }
+
+/** Hydration-safe "prefers reduced motion": false during server render and
+ *  hydration, then the real setting. (Framer's useReducedMotion reads the
+ *  setting before hydration, so markup that branches on it mismatches.) */
+export function usePrefersReducedMotion(): boolean {
+  return useMediaQuery("(prefers-reduced-motion: reduce)");
+}

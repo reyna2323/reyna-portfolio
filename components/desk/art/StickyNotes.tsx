@@ -23,7 +23,7 @@ export function StickyNotesArt() {
         <p className="font-hand text-hand-sm leading-tight text-ink-strong">
           I don&apos;t know it yet.
         </p>
-        <p className="mt-[6%] font-hand text-desk-label text-rose-ink">
+        <p className="mt-[6%] font-hand text-desk-label text-rose-ink-blush">
           teaching keeps that honest ✎
         </p>
         <span className="anim-twinkle absolute right-[9%] top-[9%] text-orchid" style={{ fontSize: 9 }} aria-hidden>
