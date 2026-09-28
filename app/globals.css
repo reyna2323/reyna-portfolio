@@ -100,6 +100,16 @@ body {
   font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
+/* Clickable things get the hand cursor (Tailwind v4's reset gives buttons a
+   plain arrow). House rule across the site: outlined = clickable, flat tinted
+   tag = just a label. */
+button:not(:disabled),
+summary,
+[role="button"],
+a[href] {
+  cursor: pointer;
+}
+
 :focus-visible {
   outline: 2px solid var(--hotpink);
   outline-offset: 3px;
@@ -495,18 +505,19 @@ body {
 }
 
 /* calm everything down for reduced-motion users */
-/* desk-object pencil circle: draws in on hover / keyboard focus */
-.scribble path {
-  stroke-dasharray: 1;
-  stroke-dashoffset: 1;
+/* sparkles that pop out of a desk object when you click it */
+.sparkle-pop {
+  left: 0;
+  top: 0;
+  transform: translate(-50%, -50%);
   opacity: 0;
-  filter: drop-shadow(0 0 4px rgba(236, 143, 189, 0.6));
-  transition: stroke-dashoffset 0.6s cubic-bezier(0.6, 0, 0.3, 1), opacity 0.2s;
+  animation: sparkle-pop 0.7s ease-out forwards;
+  text-shadow: 0 0 8px rgba(236, 143, 189, 0.9);
 }
-.group:hover > .scribble path,
-.group:focus-visible > .scribble path {
-  stroke-dashoffset: 0;
-  opacity: 0.85;
+@keyframes sparkle-pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3); }
+  25% { opacity: 1; }
+  100% { opacity: 0; transform: translate(calc(-50% + var(--pop-x)), calc(-50% + var(--pop-y))) scale(1); }
 }
 
 /* desk-object peek cards: only for real hover pointers (and keyboard focus),
@@ -547,6 +558,116 @@ body {
   mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 7'%3E%3Cpath d='M0 4.5 C4 1 8 1 12 4 S20 7 24 3.5' fill='none' stroke='black' stroke-width='1.6' stroke-linecap='round'/%3E%3C/svg%3E") repeat-x left center / 24px 7px;
   animation: underline-draw 0.9s cubic-bezier(0.6, 0, 0.3, 1) 0.35s both;
 }
+/* research signal chain: a trace through the five stages, a pulse of data
+   travelling along it, and each node lighting up as the pulse passes.
+   Vertical on phones, horizontal from 640px. */
+.signal-trace {
+  position: absolute;
+  left: 11.5px;
+  top: 12px;
+  bottom: 12px;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, rgba(125, 232, 194, 0.55) 8%, rgba(125, 232, 194, 0.55) 92%, transparent);
+}
+.signal-packet {
+  position: absolute;
+  z-index: 5;
+  left: 9px;
+  top: 12px;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--led);
+  box-shadow: 0 0 10px 3px rgba(255, 121, 198, 0.7);
+  animation: packet-down 3.5s linear infinite;
+}
+.signal-node {
+  animation: node-ping 3.5s ease-out infinite;
+}
+@keyframes packet-down {
+  from { top: 12px; opacity: 1; }
+  92% { opacity: 1; }
+  to { top: calc(100% - 18px); opacity: 0; }
+}
+@keyframes packet-across {
+  from { left: 10%; opacity: 1; }
+  92% { opacity: 1; }
+  to { left: 90%; opacity: 0; }
+}
+@keyframes node-ping {
+  0%, 14%, 100% { box-shadow: 0 0 6px rgba(125, 232, 194, 0.25); border-color: rgba(125, 232, 194, 0.6); }
+  4% { box-shadow: 0 0 16px 4px rgba(125, 232, 194, 0.65); border-color: var(--circuit); }
+}
+@media (min-width: 640px) {
+  .signal-trace {
+    left: 10%;
+    right: 10%;
+    top: 11.5px;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+    background: linear-gradient(to right, transparent, rgba(125, 232, 194, 0.55) 4%, rgba(125, 232, 194, 0.55) 96%, transparent);
+  }
+  .signal-packet {
+    top: 9px;
+    left: 10%;
+    animation-name: packet-across;
+  }
+}
+
+/* research page: a faint oscilloscope grid behind everything */
+.scope-grid {
+  background-image:
+    linear-gradient(rgba(125, 232, 194, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(125, 232, 194, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
+
+/* research stat instruments */
+.pip {
+  opacity: 0.22;
+  animation: pip-on 3.6s ease-in-out infinite;
+}
+@keyframes pip-on {
+  0%, 100% { opacity: 0.22; box-shadow: none; }
+  8%, 55% { opacity: 1; box-shadow: 0 0 5px rgba(125, 232, 194, 0.8); }
+}
+.svc-pulse {
+  left: 0;
+  animation: svc-run 2.4s linear infinite;
+}
+@keyframes svc-run {
+  from { left: 0; opacity: 0; }
+  10% { opacity: 1; }
+  90% { opacity: 1; }
+  to { left: calc(100% - 6px); opacity: 0; }
+}
+.wave-scroll {
+  animation: wave-scroll 2.2s linear infinite;
+}
+@keyframes wave-scroll {
+  to { transform: translateX(-40px); }
+}
+/* the skills composition bar grows in from the left */
+.grow-x {
+  transform-origin: left;
+  animation: grow-x 0.9s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes grow-x {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+/* research header: a heartbeat that sweeps across and fades, like a monitor */
+.ecg-sweep {
+  stroke-dasharray: 0.35 0.65;
+  animation: ecg-sweep 3.2s linear infinite;
+}
+@keyframes ecg-sweep {
+  from { stroke-dashoffset: 0.35; }
+  to { stroke-dashoffset: -0.65; }
+}
+
 /* a line of text arriving: terminal output, scope readouts */
 .anim-fade-up {
   animation: fade-up 0.45s ease-out both;
@@ -591,11 +712,28 @@ body {
     animation: none;
     opacity: 0;
   }
-  .scribble path {
-    transition: none;
-  }
   .anim-fade-up {
     animation: none;
+  }
+  .sparkle-pop {
+    display: none;
+  }
+  .signal-packet {
+    display: none;
+  }
+  .signal-node,
+  .ecg-sweep,
+  .svc-pulse,
+  .wave-scroll,
+  .grow-x {
+    animation: none;
+  }
+  .pip {
+    animation: none;
+    opacity: 1;
+  }
+  .ecg-sweep {
+    stroke-dasharray: none;
   }
   .hand-underline::after {
     animation: none;

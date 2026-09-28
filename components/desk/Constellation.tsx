@@ -77,8 +77,14 @@ export function Constellation({ current, compact = false }: { current: PageId | 
           const here = current === id;
           return (
             <g key={id}>
+              {/* the page you're on gets a soft four-point glint */}
               {here && (
-                <circle cx={x} cy={y} r="6.5" fill="none" stroke="var(--pink)" strokeWidth="0.8" className="anim-pulse-glow" />
+                <path
+                  d={`M${x} ${y - 8} Q${x + 1.1} ${y - 1.1} ${x + 8} ${y} Q${x + 1.1} ${y + 1.1} ${x} ${y + 8} Q${x - 1.1} ${y + 1.1} ${x - 8} ${y} Q${x - 1.1} ${y - 1.1} ${x} ${y - 8}Z`}
+                  fill="var(--blush)"
+                  className="anim-pulse-glow"
+                  style={{ filter: "drop-shadow(0 0 4px rgba(253,242,247,0.9))" }}
+                />
               )}
               {on ? (
                 <motion.circle

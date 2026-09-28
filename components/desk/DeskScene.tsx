@@ -48,6 +48,23 @@ function aria(id: SectionId) {
   return `Open page ${Number(num(id))}: ${s.label}`;
 }
 
+/** The small dashed tag on a bonus (non-page) object: always there so you can
+ *  spot it, and it says what to do when you hover or focus it. Dashed, where
+ *  page tags are solid, so bonuses never look like pages. */
+function EggTag({ hint, className = "left-1/2 -top-3 -translate-x-1/2" }: { hint: string; className?: string }) {
+  return (
+    <span
+      aria-hidden
+      className={`absolute z-20 flex items-center gap-1 whitespace-nowrap rounded-full border border-dashed border-lavender/60 bg-deepplum/75 px-1.5 py-0.5 font-hand text-[0.9rem] leading-none text-glass-soft shadow-[0_4px_10px_-4px_rgba(0,0,0,0.6)] backdrop-blur-sm transition-colors duration-300 group-hover:border-pink group-hover:text-glass-strong group-focus-visible:border-pink group-focus-visible:text-glass-strong ${className}`}
+    >
+      <span className="text-lavender">✦</span>
+      <span className="max-w-0 overflow-hidden opacity-0 transition-all duration-300 group-hover:max-w-[5rem] group-hover:opacity-100 group-focus-visible:max-w-[5rem] group-focus-visible:opacity-100">
+        {hint}
+      </span>
+    </span>
+  );
+}
+
 export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
   const [mugExcited, setMugExcited] = useState(false);
   const mugTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -118,7 +135,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute bottom-[max(11%,92px)] left-[34%] z-[11] w-[calc(var(--su)*10)]"
+        className="pointer-events-none absolute bottom-[max(11%,92px)] left-[34%] z-[11] w-[calc(var(--su)*10)]"
       >
         <ParallaxLayer depth={1.8}>
           <DeskObject
@@ -140,7 +157,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute right-[5%] top-[12%] z-10 w-[calc(var(--su)*19)]"
+        className="pointer-events-none absolute right-[5%] top-[12%] z-10 w-[calc(var(--su)*19)]"
       >
         <ParallaxLayer depth={1.4}>
           <div className="anim-float" style={{ animationDelay: "0.7s" }}>
@@ -158,7 +175,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute bottom-[max(10%,88px)] right-[24%] z-10 w-[calc(var(--su)*15)]"
+        className="pointer-events-none absolute bottom-[max(10%,88px)] right-[24%] z-10 w-[calc(var(--su)*15)]"
       >
         <ParallaxLayer depth={1.3}>
           <div className="anim-float" style={{ animationDelay: "0.9s" }}>
@@ -175,7 +192,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute bottom-[max(10%,88px)] left-[8%] z-10 w-[calc(var(--su)*22)]"
+        className="pointer-events-none absolute bottom-[max(10%,88px)] left-[8%] z-10 w-[calc(var(--su)*22)]"
       >
         <ParallaxLayer depth={1.2}>
           <div className="anim-float" style={{ animationDelay: "0.3s" }}>
@@ -193,7 +210,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute left-[6%] top-[max(14%,124px)] z-10 w-[calc(var(--su)*17)]"
+        className="pointer-events-none absolute left-[6%] top-[max(14%,124px)] z-10 w-[calc(var(--su)*17)]"
       >
         <ParallaxLayer depth={1.6}>
           <div className="anim-float" style={{ animationDelay: "0.4s" }}>
@@ -224,13 +241,14 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         </ParallaxLayer>
       </div>
 
-      {/* centerpiece notebook — About */}
+      {/* centerpiece notebook — About. One layer below the other objects so their
+          tags, which sit near its edges on smaller desks, always stay clickable. */}
       <motion.div
         custom={0}
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute left-1/2 top-1/2 z-10 w-[calc(var(--su)*42)] -translate-x-1/2 -translate-y-[52%]"
+        className="pointer-events-none absolute left-1/2 top-1/2 z-[9] w-[calc(var(--su)*42)] -translate-x-1/2 -translate-y-[52%]"
       >
         <ParallaxLayer depth={0.5}>
           <div className="anim-float">
@@ -243,8 +261,9 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
               type="button"
               onClick={nudgePencil}
               aria-label="Nudge the pencil"
-              className="block w-full cursor-pointer text-left"
+              className="group relative pointer-events-auto block w-full cursor-pointer text-left"
             >
+              <EggTag hint="nudge" className="left-[82%] -top-4" />
               <PencilArt doodling={pencilDoodling} />
             </button>
           </div>
@@ -257,7 +276,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="desk-awards absolute right-[3%] top-[42%] z-10 w-[calc(var(--su)*9)]"
+        className="pointer-events-none desk-awards absolute right-[3%] top-[42%] z-10 w-[calc(var(--su)*9)]"
       >
         <ParallaxLayer depth={2}>
           <div className="anim-float" style={{ animationDelay: "1.4s" }}>
@@ -277,7 +296,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="absolute bottom-[max(10%,88px)] right-[5%] z-10 w-[calc(var(--su)*14)]"
+        className="pointer-events-none absolute bottom-[max(10%,88px)] right-[5%] z-10 w-[calc(var(--su)*14)]"
       >
         <ParallaxLayer depth={1.7}>
           <div className="anim-float" style={{ animationDelay: "1.6s" }}>
@@ -290,15 +309,16 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
       {/* USC coffee mug — cold by now, kept anyway, tucked at the far edge
           beside the laptop. Quietly clickable: a small reward for anyone
           curious enough to poke at something that looks purely decorative. */}
-      <div className="absolute left-[0.5%] top-[68%] z-0 w-[calc(var(--su)*6)]">
+      <div className="pointer-events-none absolute left-[0.5%] top-[68%] z-0 w-[calc(var(--su)*6)]">
         <ParallaxLayer depth={1}>
           <div className="anim-float" style={{ animationDelay: "2s" }}>
             <button
               type="button"
               onClick={pokeMug}
               aria-label="It's just a mug. Or is it?"
-              className="block cursor-pointer transition-transform hover:scale-105 active:scale-95"
+              className="group relative pointer-events-auto block cursor-pointer transition-transform hover:scale-105 active:scale-95"
             >
+              <EggTag hint="poke me" />
               <USCMugArt excited={mugExcited} />
             </button>
           </div>
@@ -308,15 +328,16 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
       {/* a small robot companion, idling in the open patch of desk mat below
           the notebook — verified clear of the sticky notes, resume, notebook
           shadow, and dock via real bounding boxes. Quietly clickable. */}
-      <div className="absolute left-[49%] top-[72%] z-0 w-[calc(var(--su)*6)]">
+      <div className="pointer-events-none absolute left-[49%] top-[72%] z-0 w-[calc(var(--su)*6)]">
         <ParallaxLayer depth={1.1}>
           <div className="anim-float" style={{ animationDelay: "1.1s" }}>
             <button
               type="button"
               onClick={wakeRobot}
               aria-label="Say hi to the little robot"
-              className="block cursor-pointer transition-transform hover:scale-105 active:scale-95"
+              className="group relative pointer-events-auto block cursor-pointer transition-transform hover:scale-105 active:scale-95"
             >
+              <EggTag hint="say hi" />
               <RobotCompanionArt waving={robotWaving} />
             </button>
           </div>
@@ -325,15 +346,16 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
 
       {/* tiny orrery paperweight, an old gift, orbiting quietly between the
           shelf and the case file. Also quietly clickable. */}
-      <div className="absolute right-[9%] top-[59%] z-0 w-[calc(var(--su)*6.5)]">
+      <div className="pointer-events-none absolute right-[13%] top-[56%] z-0 w-[calc(var(--su)*6.5)]">
         <ParallaxLayer depth={1.2}>
           <div className="anim-float" style={{ animationDelay: "0.6s" }}>
             <button
               type="button"
               onClick={spinOrrery}
               aria-label="A little paperweight. Give it a spin?"
-              className="block cursor-pointer transition-transform hover:scale-105 active:scale-95"
+              className="group relative pointer-events-auto block cursor-pointer transition-transform hover:scale-105 active:scale-95"
             >
+              <EggTag hint="spin it" />
               <OrreryArt spun={orrerySpun} />
             </button>
           </div>

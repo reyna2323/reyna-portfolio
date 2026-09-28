@@ -103,7 +103,7 @@ export const intro = {
     detail:
       "I build the data pipelines, analyses, and human-centered research behind a socially assistive robot that coaches people through CBT, in an NIH-funded study.",
     stats: [
-      { value: "3", label: "manuscripts submitted" },
+      { value: "3", label: "manuscripts under review" },
       { value: "~20", label: "study participants" },
       { value: "6", label: "AWS services in my pipeline" },
     ],
@@ -173,7 +173,7 @@ export const experience: Role[] = [
       "Building Python ML pipelines to preprocess and model physiological heart-rate signals across hundreds of sessions",
       "Automating Fitbit compliance tracking and reminder emails (Python, AWS SES) for a 20-participant NIH-funded study",
       "Developing statistical analysis models forecasting stress trajectories for a socially assistive robot delivering CBT exercises",
-      "Second author on 2 research manuscripts submitted to CHI 2027 and HRI 2027; contributor to a manuscript submitted to IEEE T-RO",
+      "Second author on 2 research manuscripts under review at CHI 2027 and HRI 2027; 11th author on a manuscript under review at IEEE T-RO",
     ],
     more: { to: "research", label: "see all 20+ things I work on in the lab" },
   },
@@ -262,24 +262,26 @@ export const research = {
   headline: "I build the data systems and research behind a robot that helps people through anxiety.",
   intro:
     "The lab runs an NIH-funded study where a socially assistive robot (SAR) guides people through cognitive behavioral therapy (CBT) exercises while they wear Fitbits. I own a lot of what happens to that data: getting it off the wrist and into the cloud, checking it, lining it up with each session, analyzing it, and writing it up. I also work on the human side, analyzing what therapists and students actually want from a robot like this.",
+  // viz = the little instrument drawn on each stat tile
   stats: [
-    { value: "3", label: "manuscripts submitted: CHI 2027, HRI 2027 & IEEE T-RO" },
-    { value: "~20", label: "participants in a longitudinal NIH-funded study" },
-    { value: "6", label: "AWS services in my automated data pipeline" },
-    { value: "4+", label: "physiological signals aligned to sessions: HR, EDA, skin temp, SpO₂" },
+    { value: "3", label: "manuscripts under review: CHI 2027, HRI 2027 & IEEE T-RO", viz: "papers" },
+    { value: "~20", label: "participants in a longitudinal NIH-funded study", viz: "people" },
+    { value: "6", label: "AWS services in my automated data pipeline", viz: "services" },
+    { value: "4+", label: "physiological signals aligned to sessions: HR, EDA, skin temp, SpO₂", viz: "signals" },
   ],
   // the signal chain, left to right, drawn as a flow on the research page
   flow: [
-    { step: "Collect", detail: "Fitbit API (OAuth) + Google Takeout exports" },
-    { step: "Ingest", detail: "Lambda + EventBridge on a schedule, into S3" },
-    { step: "Clean", detail: "QC gates, UTC to local time, session alignment" },
-    { step: "Analyze", detail: "windowed features, exercise comparisons, forecasting" },
-    { step: "Share", detail: "figures, papers, and one day, robot behavior" },
+    { step: "Collect", detail: "Fitbit API (OAuth) + Google Takeout exports", tools: ["Fitbit API", "OAuth", "REST"] },
+    { step: "Ingest", detail: "Lambda + EventBridge on a schedule, into S3", tools: ["Lambda", "EventBridge", "S3", "KMS"] },
+    { step: "Clean", detail: "QC gates, UTC to local time, session alignment", tools: ["Python", "QA/QC", "time sync"] },
+    { step: "Analyze", detail: "windowed features, exercise comparisons, forecasting", tools: ["features", "statistics", "modeling"] },
+    { step: "Share", detail: "figures, papers, and one day, robot behavior", tools: ["Matplotlib", "writing", "posters"] },
   ],
   publications: [
-    { venue: "CHI 2027", role: "Second author", status: "manuscript submitted" },
-    { venue: "HRI 2027", role: "Second author", status: "manuscript submitted" },
-    { venue: "IEEE Transactions on Robotics (T-RO)", role: "Contributor", status: "manuscript submitted" },
+    // position = where I appear in the author list (drawn as a little strip of dots)
+    { venue: "CHI 2027", role: "Second author", position: 2, status: "under review" },
+    { venue: "HRI 2027", role: "Second author", position: 2, status: "under review" },
+    { venue: "IEEE Transactions on Robotics (T-RO)", role: "11th author", position: 11, status: "under review" },
   ],
   publicationTopics:
     "The two second-author papers cover wearable physiological data during robot-guided CBT, and participatory design with therapists and university students.",
@@ -314,7 +316,7 @@ export const research = {
       title: "Study-compliance monitoring",
       detail:
         "Classifies every participant-day as compliant or non-compliant from heart-rate timestamps and wear-time coverage, and drives the automated reminder emails that keep the study on track.",
-      skills: ["Python", "Rule-based systems", "Data validation", "AWS SES"],
+      skills: ["Python", "Rule-based systems", "Data validation", "SES"],
     },
     {
       featured: true,
@@ -440,7 +442,7 @@ export const research = {
       title: "Maintainable research codebase",
       detail:
         "Reorganized the lab's code into a pipeline architecture with separate ingestion, alignment, filtering, visualization, diagnostics, and configuration, versioned with Git branches and pull requests.",
-      skills: ["Software architecture", "Modular design", "Git"],
+      skills: ["Software architecture", "Modular design", "Git/GitHub"],
     },
     {
       area: "infra",
@@ -565,13 +567,13 @@ export const terminalScript: { cmd: string; out: string }[] = [
 ];
 
 /* readouts that cycle on the oscilloscope screen, like live measurements */
-export const scopeReadouts = ["3 papers submitted", "n≈20 participants", "6 AWS services", "HR·EDA·TEMP·SpO₂"];
+export const scopeReadouts = ["3 papers in review", "n≈20 participants", "6 AWS services", "HR·EDA·TEMP·SpO₂"];
 
 /* at-a-glance facts on the little index card that appears when you hover a
    desk object: the headline of each page before you open it */
 export const peeks: Record<PageId, string[]> = {
   start: ["who I am + a map of this desk", "7 pages, research first"],
-  research: ["3 manuscripts: CHI, HRI & IEEE T-RO", "NIH-funded study, ~20 participants", "6-service AWS data pipeline"],
+  research: ["3 manuscripts under review: CHI, HRI & T-RO", "NIH-funded study, ~20 participants", "6-service AWS data pipeline"],
   experience: ["6 roles, 2 current", "USC Interaction Lab + USC DEN", "research · software · teaching · hardware"],
   projects: ["Sproutsy: AI plant-care app", "Recycode: 5,000+ lbs of clothing donated", "exoplanet periods at 92% accuracy"],
   skills: ["Python · C/C++ · TypeScript · Java", "AWS · PyTorch · React Native", "7 toolkits, from code to hardware"],

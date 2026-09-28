@@ -24,13 +24,14 @@ const ARTIFACT_SURFACE: Record<Project["artifact"], { bg: string; family: "light
 
 const BODY: Record<"light" | "dark", string> = { light: "text-ink-soft", dark: "text-glass-soft" };
 const META: Record<"light" | "dark", string> = { light: "text-ink-muted", dark: "text-glass-muted" };
+/* labels are flat tints (not clickable); buttons are outlined (clickable) */
 const CHIP: Record<"light" | "dark", string> = {
-  light: "border-ink-muted/30 text-ink-muted",
-  dark: "border-glass-muted/30 text-glass-muted",
+  light: "bg-ink-strong/[0.07] text-ink-muted",
+  dark: "bg-white/[0.08] text-glass-muted",
 };
 const BUTTON: Record<"light" | "dark", string> = {
-  light: "border-ink-muted/30 text-ink-soft hover:bg-ink-strong/5",
-  dark: "border-glass-muted/30 text-glass-soft hover:bg-glass-strong/10",
+  light: "border-ink-soft/60 font-semibold text-ink-strong hover:border-ink-strong hover:bg-ink-strong/10",
+  dark: "border-glass-soft/60 font-semibold text-glass-strong hover:border-glass-strong hover:bg-glass-strong/10",
 };
 
 /** Renders a single project as a stylized artifact whose look depends on `project.artifact`. */
@@ -41,7 +42,7 @@ export function ProjectArtifact({ project }: { project: Project }) {
     <article
       className={`relative rounded-lg border p-4 transition-[transform,box-shadow] duration-300 ease-out hover:-translate-y-1 hover:shadow-[0_16px_30px_-14px_rgba(0,0,0,0.45)] ${surface.bg} ${fam === "dark" ? "font-mono" : ""}`}
     >
-      <span aria-hidden className={`absolute right-3 top-3 rounded-full border px-2 py-0.5 text-[0.65rem] uppercase tracking-wide ${CHIP[fam]}`}>
+      <span aria-hidden className={`absolute right-3 top-3 rounded-full px-2 py-0.5 text-[0.65rem] uppercase tracking-wide ${CHIP[fam]}`}>
         {ARTIFACT_LABEL[project.artifact]}
       </span>
       <p className={`pr-24 text-xs uppercase tracking-wide ${META[fam]}`}>
@@ -53,7 +54,7 @@ export function ProjectArtifact({ project }: { project: Project }) {
 
       <div className="mt-3 flex flex-wrap gap-1.5">
         {project.stack.map((s) => (
-          <span key={s} className={`rounded-full border px-2 py-0.5 text-xs ${CHIP[fam]}`}>
+          <span key={s} className={`rounded-full px-2 py-0.5 text-xs ${CHIP[fam]}`}>
             {s}
           </span>
         ))}
@@ -91,7 +92,7 @@ export function ProjectArtifact({ project }: { project: Project }) {
               rel="noreferrer"
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors ${BUTTON[fam]}`}
             >
-              <GitBranch size={12} aria-hidden /> GitHub
+              <GitBranch size={12} aria-hidden /> GitHub ↗
               <span className="sr-only"> for {project.title} (opens in a new tab)</span>
             </a>
           )}
@@ -102,7 +103,7 @@ export function ProjectArtifact({ project }: { project: Project }) {
               rel="noreferrer"
               className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs transition-colors ${BUTTON[fam]}`}
             >
-              <ExternalLink size={12} aria-hidden /> Demo
+              <ExternalLink size={12} aria-hidden /> Demo ↗
               <span className="sr-only"> of {project.title} (opens in a new tab)</span>
             </a>
           )}
