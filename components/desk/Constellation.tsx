@@ -83,22 +83,28 @@ export function Constellation({ current, compact = false }: { current: PageId | 
                   d={`M${x} ${y - 8} Q${x + 1.1} ${y - 1.1} ${x + 8} ${y} Q${x + 1.1} ${y + 1.1} ${x} ${y + 8} Q${x - 1.1} ${y + 1.1} ${x - 8} ${y} Q${x - 1.1} ${y - 1.1} ${x} ${y - 8}Z`}
                   fill="var(--blush)"
                   className="anim-pulse-glow"
-                  style={{ filter: "drop-shadow(0 0 4px rgba(253,242,247,0.9))" }}
                 />
               )}
+              {/* glows are static halos rather than filters, so twinkling stays cheap */}
               {on ? (
-                <motion.circle
-                  cx={x}
-                  cy={y}
-                  fill="var(--petal)"
-                  initial={reduced ? false : { r: 0 }}
-                  animate={{ r: 2.8 }}
-                  transition={{ type: "spring", stiffness: 260, damping: 12 }}
-                  className="anim-twinkle"
-                  style={{ filter: "drop-shadow(0 0 3px rgba(253,242,247,0.95))", animationDelay: `${i * 0.4}s`, animationDuration: "4s" }}
-                />
+                <>
+                  <circle cx={x} cy={y} r="6" fill="var(--petal)" opacity="0.22" />
+                  <motion.circle
+                    cx={x}
+                    cy={y}
+                    fill="var(--petal)"
+                    initial={reduced ? false : { r: 0 }}
+                    animate={{ r: 2.8 }}
+                    transition={{ type: "spring", stiffness: 260, damping: 12 }}
+                    className="anim-twinkle"
+                    style={{ animationDelay: `${i * 0.4}s`, animationDuration: "4s" }}
+                  />
+                </>
               ) : (
-                <circle cx={x} cy={y} r="2" fill="var(--lilac)" opacity="0.75" style={{ filter: "drop-shadow(0 0 2px rgba(195,168,232,0.8))" }} />
+                <>
+                  <circle cx={x} cy={y} r="4.5" fill="var(--lilac)" opacity="0.18" />
+                  <circle cx={x} cy={y} r="2" fill="var(--lilac)" opacity="0.75" />
+                </>
               )}
             </g>
           );

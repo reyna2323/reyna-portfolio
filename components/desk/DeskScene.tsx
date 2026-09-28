@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import type { PageId, SectionId } from "@/lib/content";
 import { peeks, sections, startPage } from "@/lib/content";
 import { ParallaxProvider, ParallaxLayer } from "./Parallax";
+import { announceEgg } from "./EasterEggs";
 import { DeskObject } from "./DeskObject";
 import { Atmosphere } from "./Atmosphere";
 import { NotebookArt } from "./art/Notebook";
@@ -48,23 +49,6 @@ function aria(id: SectionId) {
   return `Open page ${Number(num(id))}: ${s.label}`;
 }
 
-/** The small dashed tag on a bonus (non-page) object: always there so you can
- *  spot it, and it says what to do when you hover or focus it. Dashed, where
- *  page tags are solid, so bonuses never look like pages. */
-function EggTag({ hint, className = "left-1/2 -top-3 -translate-x-1/2" }: { hint: string; className?: string }) {
-  return (
-    <span
-      aria-hidden
-      className={`absolute z-20 flex items-center gap-1 whitespace-nowrap rounded-full border border-dashed border-lavender/60 bg-deepplum/75 px-1.5 py-0.5 font-hand text-[0.9rem] leading-none text-glass-soft shadow-[0_4px_10px_-4px_rgba(0,0,0,0.6)] backdrop-blur-sm transition-colors duration-300 group-hover:border-pink group-hover:text-glass-strong group-focus-visible:border-pink group-focus-visible:text-glass-strong ${className}`}
-    >
-      <span className="text-lavender">✦</span>
-      <span className="max-w-0 overflow-hidden opacity-0 transition-all duration-300 group-hover:max-w-[5rem] group-hover:opacity-100 group-focus-visible:max-w-[5rem] group-focus-visible:opacity-100">
-        {hint}
-      </span>
-    </span>
-  );
-}
-
 export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
   const [mugExcited, setMugExcited] = useState(false);
   const mugTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -74,26 +58,48 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
   const pencilTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const pokeMug = () => {
+    announceEgg("The USC mug perks right up ♡");
     setMugExcited(true);
     if (mugTimeout.current) clearTimeout(mugTimeout.current);
     mugTimeout.current = setTimeout(() => setMugExcited(false), 1500);
   };
 
   const spinOrrery = () => {
+    announceEgg("The little planets spin around their orbits ✦");
     setOrrerySpun(true);
     if (orreryTimeout.current) clearTimeout(orreryTimeout.current);
     orreryTimeout.current = setTimeout(() => setOrrerySpun(false), 1400);
   };
 
   const nudgePencil = () => {
+    announceEgg("The pencil starts doodling ✎");
     setPencilDoodling(true);
     if (pencilTimeout.current) clearTimeout(pencilTimeout.current);
     pencilTimeout.current = setTimeout(() => setPencilDoodling(false), 1200);
   };
 
+  const [lookingCloser, setLookingCloser] = useState(false);
+  const lookTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lookCloser = () => {
+    setLookingCloser(true);
+    if (lookTimeout.current) clearTimeout(lookTimeout.current);
+    lookTimeout.current = setTimeout(() => setLookingCloser(false), 3200);
+    announceEgg("You found a note: the more you look, the more you find.");
+  };
+
+  const [circuitOn, setCircuitOn] = useState(false);
+  const circuitTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const closeCircuit = () => {
+    setCircuitOn(true);
+    if (circuitTimeout.current) clearTimeout(circuitTimeout.current);
+    circuitTimeout.current = setTimeout(() => setCircuitOn(false), 2600);
+    announceEgg("Circuit closed. The breadboard lights up.");
+  };
+
   const [robotWaving, setRobotWaving] = useState(false);
   const robotTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
   const wakeRobot = () => {
+    announceEgg("The little robot waves hi!");
     setRobotWaving(true);
     if (robotTimeout.current) clearTimeout(robotTimeout.current);
     robotTimeout.current = setTimeout(() => setRobotWaving(false), 1600);
@@ -210,7 +216,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="pointer-events-none absolute left-[6%] top-[max(14%,124px)] z-10 w-[calc(var(--su)*17)]"
+        className="pointer-events-none absolute left-[6%] top-[max(14%,166px)] z-10 w-[calc(var(--su)*17)]"
       >
         <ParallaxLayer depth={1.6}>
           <div className="anim-float" style={{ animationDelay: "0.4s" }}>
@@ -223,20 +229,42 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
 
       {/* magnifying glass, resting in the gap between the Pi and the
           breadboard — verified clear of both via real bounding boxes.
-          for anyone who takes "the more you look" literally */}
-      <div className="pointer-events-none absolute left-[7%] top-[max(32%,262px)] z-0 w-[calc(var(--su)*5)] opacity-90">
+          for anyone who takes "the more you look" literally: click it and it
+          leans in and turns up a note hidden on the desk. */}
+      <div className="pointer-events-none absolute left-[7%] top-[max(33.5%,320px)] z-[1] w-[calc(var(--su)*5)] opacity-90">
         <ParallaxLayer depth={0.9}>
           <div className="anim-float" style={{ animationDelay: "1.8s" }}>
-            <MagnifyingGlassArt />
+            <button
+              type="button"
+              onClick={lookCloser}
+              aria-label="A magnifying glass. Take a closer look?"
+              className="pointer-events-auto relative block w-full cursor-pointer"
+            >
+              <span
+                className="block transition-transform duration-500 ease-out"
+                style={{ transform: lookingCloser ? "rotate(-24deg) scale(1.35) translate(12%, -8%)" : undefined }}
+              >
+                <span aria-hidden className="block"><MagnifyingGlassArt /></span>
+              </span>
+            </button>
           </div>
         </ParallaxLayer>
       </div>
 
-      {/* breadboard — decorative, sits near hardware */}
+      {/* breadboard — sits near the hardware. Click it and the circuit closes:
+          it lights up mint, like the first LED you ever got to blink. */}
       <div className="pointer-events-none absolute left-[5%] top-[46%] z-0 w-[calc(var(--su)*16)] opacity-90">
         <ParallaxLayer depth={1.1}>
           <div className="anim-float" style={{ animationDelay: "1.1s" }}>
-            <BreadboardArt />
+            <button
+              type="button"
+              onClick={closeCircuit}
+              aria-label="A breadboard. Close the circuit?"
+              className="pointer-events-auto relative block w-full cursor-pointer transition-[filter] duration-300"
+              style={{ filter: circuitOn ? "drop-shadow(0 0 14px rgba(125,232,194,0.75)) brightness(1.08)" : undefined }}
+            >
+              <span aria-hidden className="block"><BreadboardArt /></span>
+            </button>
           </div>
         </ParallaxLayer>
       </div>
@@ -248,7 +276,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
         variants={stagger}
         initial="hidden"
         animate="show"
-        className="pointer-events-none absolute left-1/2 top-1/2 z-[9] w-[calc(var(--su)*42)] -translate-x-1/2 -translate-y-[52%]"
+        className="pointer-events-none absolute left-1/2 top-1/2 z-[9] w-[calc(var(--su)*44)] -translate-x-1/2 -translate-y-[54%]"
       >
         <ParallaxLayer depth={0.5}>
           <div className="anim-float">
@@ -263,8 +291,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
               aria-label="Nudge the pencil"
               className="group relative pointer-events-auto block w-full cursor-pointer text-left"
             >
-              <EggTag hint="nudge" className="left-[82%] -top-4" />
-              <PencilArt doodling={pencilDoodling} />
+              <span aria-hidden className="block"><PencilArt doodling={pencilDoodling} /></span>
             </button>
           </div>
         </ParallaxLayer>
@@ -318,8 +345,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
               aria-label="It's just a mug. Or is it?"
               className="group relative pointer-events-auto block cursor-pointer transition-transform hover:scale-105 active:scale-95"
             >
-              <EggTag hint="poke me" />
-              <USCMugArt excited={mugExcited} />
+              <span aria-hidden className="block"><USCMugArt excited={mugExcited} /></span>
             </button>
           </div>
         </ParallaxLayer>
@@ -337,8 +363,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
               aria-label="Say hi to the little robot"
               className="group relative pointer-events-auto block cursor-pointer transition-transform hover:scale-105 active:scale-95"
             >
-              <EggTag hint="say hi" />
-              <RobotCompanionArt waving={robotWaving} />
+              <span aria-hidden className="block"><RobotCompanionArt waving={robotWaving} /></span>
             </button>
           </div>
         </ParallaxLayer>
@@ -355,8 +380,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
               aria-label="A little paperweight. Give it a spin?"
               className="group relative pointer-events-auto block cursor-pointer transition-transform hover:scale-105 active:scale-95"
             >
-              <EggTag hint="spin it" />
-              <OrreryArt spun={orrerySpun} />
+              <span aria-hidden className="block"><OrreryArt spun={orrerySpun} /></span>
             </button>
           </div>
         </ParallaxLayer>

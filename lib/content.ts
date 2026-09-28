@@ -22,8 +22,9 @@ export type SectionId =
   | "awards"
   | "contact";
 
-/** Every page a visitor can open: the contents page plus each section. */
-export type PageId = "start" | SectionId;
+/** Every page a visitor can open: the contents page, each section, and the
+ *  validation case study (a deep dive off Research, outside the numbered flip order). */
+export type PageId = "start" | "validation" | SectionId;
 
 export interface Section {
   id: SectionId;
@@ -47,6 +48,9 @@ export interface Project {
   mattered: string; // "why it mattered"
   github?: string; // link to a real repo; the button hides when unset
   demo?: string; // link to a live demo; the button hides when unset
+  short?: string; // short name for the project timeline
+  figures?: { kind: "qr" | "dashboard" | "sprout" | "donate" | "transit"; caption: string }[]; // little animated figures on the card
+  specs?: { value: string; label: string }[]; // readouts that count up on the card
 }
 
 /* ---------------------------------------------------------------- identity */
@@ -58,6 +62,9 @@ export const site = {
   email: "reynapat@usc.edu",
   linkedin: "https://www.linkedin.com/in/reynapatelegv",
   github: "https://github.com/reyna2323",
+  // put your résumé PDF in /public and set its path here (e.g. "/Reyna-Patel-Resume.pdf")
+  // to show a "PDF ↗" link in the quick nav; leave it empty to hide the link
+  resumePdf: "/Reyna-Patel-Resume.pdf" as string,
 };
 
 /* ---------------------------------------------------------------- sections */
@@ -72,23 +79,34 @@ export const startPage = {
 
 export const sections: Section[] = [
   { id: "research", label: "Research", hand: "my research", object: "the oscilloscope", blurb: "wearable-data pipelines, ML & 3 papers", featured: true },
-  { id: "experience", label: "Experience", hand: "experience", object: "the résumé folder", blurb: "every role, newest first" },
-  { id: "projects", label: "Projects", hand: "projects", object: "the laptop", blurb: "an app, a nonprofit & exoplanets" },
+  { id: "experience", label: "Experience", hand: "experience", object: "the résumé folder", blurb: "every role, current ones first" },
+  { id: "projects", label: "Projects", hand: "projects", object: "the laptop", blurb: "a club platform, apps & exoplanets" },
   { id: "skills", label: "Skills", hand: "skills & tools", object: "the pink circuit board", blurb: "languages, cloud, research methods" },
   { id: "about", label: "About", hand: "about me ♡", object: "the notebook", blurb: "who I am and where I study" },
-  { id: "awards", label: "Awards", hand: "shiny things ✧", object: "the trophy shelf", blurb: "awards & certifications" },
-  { id: "contact", label: "Contact", hand: "say hi!", object: "the envelope", blurb: "email, LinkedIn & GitHub" },
+  { id: "awards", label: "Awards", hand: "awards", object: "the trophy shelf", blurb: "awards & certifications" },
+  { id: "contact", label: "Contact", hand: "contact", object: "the envelope", blurb: "email, LinkedIn & GitHub" },
 ];
 
 /** Reading order for page-flip buttons: contents page first, then each section. */
 export const pageOrder: PageId[] = ["start", ...sections.map((s) => s.id)];
 
+/** The deep technical page, linked from Research. */
+export const validationPage = {
+  id: "validation" as const,
+  label: "Case study: the validation layer",
+  hand: "case study",
+  object: "the research page",
+  blurb: "when real-world sensor data can actually be trusted",
+};
+
 export function pageMeta(id: PageId) {
-  return id === "start" ? startPage : sections.find((s) => s.id === id)!;
+  if (id === "start") return startPage;
+  if (id === "validation") return validationPage;
+  return sections.find((s) => s.id === id)!;
 }
 
 export function isPageId(value: string): value is PageId {
-  return (pageOrder as string[]).includes(value);
+  return value === "validation" || (pageOrder as string[]).includes(value);
 }
 
 /* -------------------------------------------------------------- start here */
@@ -173,9 +191,24 @@ export const experience: Role[] = [
       "Building Python ML pipelines to preprocess and model physiological heart-rate signals across hundreds of sessions",
       "Automating Fitbit compliance tracking and reminder emails (Python, AWS SES) for a 20-participant NIH-funded study",
       "Developing statistical analysis models forecasting stress trajectories for a socially assistive robot delivering CBT exercises",
-      "Second author on 2 research manuscripts under review at CHI 2027 and HRI 2027; 11th author on a manuscript under review at IEEE T-RO",
+      "Second author on two manuscripts and 11th author on a third, all under review in human-computer interaction and robotics",
     ],
     more: { to: "research", label: "see all 20+ things I work on in the lab" },
+  },
+  {
+    id: "fsn-club",
+    title: "Programming Chair, Executive Board",
+    org: "USC Food Science & Nutrition Club",
+    location: "Los Angeles, CA",
+    period: "Jan 2026 to Present",
+    current: true,
+    kind: "software",
+    bullets: [
+      "Independently built a full-stack React/Firebase web app for the club, including a role-based admin dashboard with 15 sections for managing events, attendance, finances, committees and new-member applications",
+      "Built QR-code attendance check-in with real-time Firebase sync, and an offline-first data layer that falls back to local storage",
+      "Designed an animated, responsive public site with Framer Motion, including an events calendar, a blog with reading progress, an interest form with live validation, and an AI chatbot trained on club content",
+    ],
+    more: { to: "projects", label: "see the full project" },
   },
   {
     id: "den",
@@ -264,7 +297,7 @@ export const research = {
     "The lab runs an NIH-funded study where a socially assistive robot (SAR) guides people through cognitive behavioral therapy (CBT) exercises while they wear Fitbits. I own a lot of what happens to that data: getting it off the wrist and into the cloud, checking it, lining it up with each session, analyzing it, and writing it up. I also work on the human side, analyzing what therapists and students actually want from a robot like this.",
   // viz = the little instrument drawn on each stat tile
   stats: [
-    { value: "3", label: "manuscripts under review: CHI 2027, HRI 2027 & IEEE T-RO", viz: "papers" },
+    { value: "3", label: "manuscripts under review in human-computer interaction and robotics", viz: "papers" },
     { value: "~20", label: "participants in a longitudinal NIH-funded study", viz: "people" },
     { value: "6", label: "AWS services in my automated data pipeline", viz: "services" },
     { value: "4+", label: "physiological signals aligned to sessions: HR, EDA, skin temp, SpO₂", viz: "signals" },
@@ -279,9 +312,9 @@ export const research = {
   ],
   publications: [
     // position = where I appear in the author list (drawn as a little strip of dots)
-    { venue: "CHI 2027", role: "Second author", position: 2, status: "under review" },
-    { venue: "HRI 2027", role: "Second author", position: 2, status: "under review" },
-    { venue: "IEEE Transactions on Robotics (T-RO)", role: "11th author", position: 11, status: "under review" },
+    { venue: "Manuscript in human-computer interaction", role: "Second author", position: 2, status: "under review" },
+    { venue: "Manuscript in human-robot interaction", role: "Second author", position: 2, status: "under review" },
+    { venue: "Manuscript in robotics", role: "11th author", position: 11, status: "under review" },
   ],
   publicationTopics:
     "The two second-author papers cover wearable physiological data during robot-guided CBT, and participatory design with therapists and university students.",
@@ -461,17 +494,158 @@ export const research = {
   ] satisfies ResearchItem[] as ResearchItem[],
 };
 
+/* ------------------------------------------------ validation case study */
+
+export type FailureId = "contact" | "invalid" | "buffer" | "timing" | "sources" | "timezone";
+
+/* The deep-dive page off Research. Plots on the page use simulated signals:
+   real participant data from the study stays private. No participant IDs. */
+export const validationStudy = {
+  kicker: "case study · from the lab notebook",
+  title: "When can real-world sensor data actually be trusted?",
+  thesis: "Building a trustworthy physiological-data pipeline, not just a pipeline that runs.",
+  lesson: "A value can be present, plausible, and still invalid.",
+  simulatedLabel: "Simulated signal based on failure patterns observed during pipeline development.",
+  // the path every sample takes; each failure mode breaks one stage
+  stages: ["Raw wearable data", "Quality validation", "Timestamp validation", "Session alignment", "Analysis-ready physiology"],
+  failures: [
+    {
+      id: "contact",
+      short: "No contact",
+      title: "Missing / no-contact wearable data",
+      stage: 1,
+      looked:
+        "The Fitbit may not record usable physiology when the device is off-wrist, poorly positioned, or has insufficient sensor contact. A timestamp existing doesn't mean the measurement behind it is usable.",
+      check: "Wear and contact gating: a sample only counts when the device reports real sensor contact.",
+      unchecked: "Minutes when the watch lost contact are treated as real readings.",
+      caught: "Off-wrist and no-contact minutes are flagged and kept out of the analysis.",
+    },
+    {
+      id: "invalid",
+      short: "Invalid feature",
+      title: "Vendor-invalid physiological features",
+      stage: 1,
+      looked:
+        "Raw sensor values can exist while Fitbit's quality flags mark the derived feature invalid. With cEDA, raw values were there but valid_ceda_feats was false, so the cleaned cEDA became NaN.",
+      check: "Carry the vendor's quality flags (like valid_ceda_feats) through preprocessing instead of trusting the raw number.",
+      unchecked: "Plausible-looking cEDA values enter the analysis even though Fitbit marked them invalid.",
+      caught: "Feature dropped: valid_ceda_feats = false.",
+    },
+    {
+      id: "buffer",
+      short: "Buffer incomplete",
+      title: "Incomplete sensor buffers",
+      stage: 1,
+      looked:
+        "Some features need enough consecutive sensor samples before they can be calculated reliably. ceda_buffer_filled: false meant measurements appeared in the raw data, but there wasn't enough valid information to accept the feature.",
+      check: "Require the buffer-filled flag before a derived feature is accepted.",
+      unchecked: "A feature computed from too few samples is treated as reliable.",
+      caught: "Rejected until ceda_buffer_filled = true.",
+    },
+    {
+      id: "timing",
+      short: "Session timing",
+      title: "Session-timing / phase-boundary inconsistencies",
+      stage: 3,
+      looked:
+        "AWS session metadata could be incomplete or internally inconsistent: session events out of chronological order, or an end_exercise2_time missing even though two exercises occurred. That makes aligning physiology to CBT phases nontrivial.",
+      check: "Validate the session log itself: events in order, and every CBT phase has both a start and an end before physiology is assigned to it.",
+      unchecked: "Physiology gets assigned to a CBT phase whose boundaries were never recorded.",
+      caught: "Session flagged: events out of order or a phase end missing.",
+    },
+    {
+      id: "sources",
+      short: "Missing sources",
+      title: "Missing data sources during multimodal alignment",
+      stage: 3,
+      looked:
+        "A participant can have Fitbit data but be missing the matching AWS session or tracker information. One participant had no usable AWS session; another lacked the expected tracker row.",
+      check: "Audit every join, and label \"the metadata needed to align this is missing\" separately from \"no physiological response.\"",
+      unchecked: "Missing metadata looks exactly like \"no physiological response.\"",
+      caught: "Labeled \"alignment metadata missing,\" not \"no response.\"",
+    },
+    {
+      id: "timezone",
+      short: "Timezone offset",
+      title: "Timezone / timestamp alignment errors",
+      stage: 2,
+      looked:
+        "Fitbit, AWS, participant trackers, and session logs can represent time differently. A timezone offset or parsing error shifts otherwise valid physiology into the wrong CBT phase, and the data still looks perfectly reasonable.",
+      check: "Normalize every source to UTC, convert to study-local time once, and check the result against known session windows.",
+      unchecked: "Valid physiology lands in the wrong CBT phase, and nothing looks wrong.",
+      caught: "Every source normalized to UTC; alignment checked against the session window.",
+    },
+  ] satisfies { id: FailureId; short: string; title: string; stage: number; looked: string; check: string; unchecked: string; caught: string }[],
+  firstFooled: {
+    heading: "the one that fooled me first",
+    body: "One of the most misleading failures was seeing a physiological signal that looked like real data but was not actually valid for analysis. For one participant, the raw Fitbit/BSA output contained dozens of cEDA measurements with plausible numeric values, so at first glance the signal appeared usable. However, after applying Fitbit's quality information, the entire cleaned cEDA feature became missing. Tracing the discrepancy showed that the device had marked the cEDA features as invalid and reported that the required sensor buffer had not been filled. That changed how I approached validation: I stopped treating the presence of a numeric value as evidence that a measurement was usable and instead propagated sensor-quality flags through the preprocessing pipeline.",
+  },
+  code: `def validate_signal(row):
+    """Simplified sketch of wearable quality checks."""
+
+    if not row["sensor_contact"]:
+        return None
+
+    if not row["feature_valid"]:
+        return None
+
+    if not row["buffer_filled"]:
+        return None
+
+    return row["value"]`,
+  codeDemo: `raw_value = 219.0
+
+validated_value = validate_signal(sample)
+
+# raw_value exists
+# validated_value -> None`,
+  codeCaption:
+    "The difficult cases were not always missing measurements. Sometimes a measurement existed, but the surrounding quality metadata showed that it should never enter the analysis.",
+};
+
 /* ---------------------------------------------------------------- projects */
 
 export const projectsIntro =
-  "Three things I built outside of a job description: an AI plant-care app, a clothing-donation nonprofit with its own website and app, and a model that finds the rhythm of other worlds in starlight.";
+  "Four things I built outside of a job description: a full-stack platform that runs a USC club, an AI plant-care app, a clothing-donation nonprofit with its own website and app, and a model that finds the rhythm of other worlds in starlight.";
 
 export const projects: Project[] = [
+  {
+    id: "fsn-club",
+    title: "USC Food Science & Nutrition Club",
+    category: "Programming Chair · Full-Stack Web App",
+    period: "Jan 2026 to Present",
+    artifact: "datasheet",
+    description:
+      "The club's public website and the admin portal its leaders run it from: events, blog posts, attendance, finances, committees and new-member applications, synced in real time through Firebase. I designed and built it independently as the executive board's programming chair.",
+    stack: ["React 19", "Vite", "Firebase Realtime Database", "React Router", "Framer Motion", "CSS", "Botpress", "Vercel"],
+    built:
+      "An animated public site (events with countdowns, RSVPs and a calendar, a blog with reading progress, a join form with live validation, a ⌘K search palette and an AI chat assistant trained on club content) plus a role-based admin dashboard of about 3,000 lines.",
+    highlights: [
+      "Admin, Executive and General roles with different permissions across 15 dashboard sections, behind protected routes",
+      "QR-code attendance: a leader starts a session and members check in from their phones, updating live in Firebase",
+      "An offline-first data layer that uses Firebase when it's configured and falls back to local storage, with a one-time migration of existing data",
+      "Analytics drawn by hand in SVG and CSS with no chart library: attendance bars, a task-completion ring, finance breakdowns and a member leaderboard",
+      "Prospective-member tracking (search, filter, sort, pending → contacted → accepted) and member profiles with photo cropping and committee badges",
+    ],
+    mattered:
+      "A student club usually runs on group chats and a dozen spreadsheets. This gave the whole exec board one live place to run events, attendance, money and recruiting, and gave members a site worth sending people to.",
+    github: "https://github.com/reyna2323/usc-nutrition-site",
+    short: "Nutrition Club",
+    figures: [
+      { kind: "qr", caption: "fig. 1a: QR check-in, syncing live" },
+      { kind: "dashboard", caption: "fig. 1b: analytics, hand-drawn in SVG" },
+    ],
+    specs: [
+      { value: "15", label: "dashboard sections" },
+      { value: "3", label: "user roles" },
+      { value: "52", label: "commits" },
+    ],
+  },
   {
     id: "sproutsy",
     title: "Sproutsy",
     category: "Full-Stack AI App",
-    period: "Jan 2025 to May 2025",
+    period: "Jan 2025 to Dec 2025",
     artifact: "polaroid",
     description:
       "A plant-care companion that actually knows where you live: camera input, geolocation, and live weather feed an AI care engine.",
@@ -482,6 +656,9 @@ export const projects: Project[] = [
     mattered:
       "Every houseplant guide assumes an average climate that nobody lives in. Sproutsy made the advice local, visual, and hard to ignore.",
     github: "https://github.com/reyna2323/Sproutsy_React_App",
+    short: "Sproutsy",
+    figures: [{ kind: "sprout", caption: "fig. 2: advice that grows with the weather" }],
+    specs: [{ value: "3", label: "live inputs: camera, location, weather" }],
   },
   {
     id: "recycode",
@@ -499,6 +676,9 @@ export const projects: Project[] = [
     ],
     mattered:
       "Good intentions pile up in closets. Recycode gave them a pickup point, a sorting process, and a place to go.",
+    short: "Recycode",
+    figures: [{ kind: "donate", caption: "fig. 3: every drive, sorted and sent" }],
+    specs: [{ value: "5,000+", label: "lbs of clothing donated" }],
   },
   {
     id: "astro-ml",
@@ -514,6 +694,9 @@ export const projects: Project[] = [
     highlights: ["Authored a paper and delivered a formal presentation and seminar on the role of AI in astrophysics research"],
     mattered:
       "Transit signals are needles in noisy starlight. Getting a model to find another world's rhythm in that noise is the whole reason I fell for ML.",
+    short: "Astro ML",
+    figures: [{ kind: "transit", caption: "fig. 4: a planet dimming its star" }],
+    specs: [{ value: "92%", label: "accuracy on orbital periods" }],
   },
 ];
 
@@ -526,7 +709,7 @@ export const skills = {
     { label: "Cloud & data engineering", items: ["AWS Lambda", "EventBridge", "S3", "Secrets Manager", "KMS", "SES", "REST APIs", "OAuth", "openpyxl"] },
     { label: "ML & data science", items: ["PyTorch", "TensorFlow", "Time-series analysis", "Feature engineering", "Statistical modeling", "Matplotlib"] },
     { label: "Research methods", items: ["Thematic analysis", "Participatory design", "Multimodal sensor data", "Scientific writing"] },
-    { label: "Frameworks & platforms", items: ["React", "React Native", "Firebase", "Supabase", "Hugging Face"] },
+    { label: "Frameworks & platforms", items: ["React", "React Native", "Firebase", "Supabase", "Vite", "React Router", "Framer Motion", "Vercel", "Hugging Face"] },
     { label: "Tools", items: ["Linux", "Git/GitHub", "CUDA", "FFmpeg", "LaTeX", "Vim"] },
     { label: "Hardware", items: ["Arduino", "Embedded systems", "PC builds & upgrades", "Broadcast AV equipment"] },
   ],
@@ -561,6 +744,7 @@ export const terminalScript: { cmd: string; out: string }[] = [
   { cmd: "ssh reyna@lab", out: "connected: USC Interaction Lab ♡" },
   { cmd: "python hr_model.py", out: "✓ HR · EDA · temp · SpO₂ aligned" },
   { cmd: "python forecast.py", out: "✓ stress trajectories modeled" },
+  { cmd: "vercel --prod", out: "✓ nutrition club site deployed" },
   { cmd: "npx expo start", out: "✓ Recycode app is live" },
   { cmd: "git push origin main", out: "✓ shipped, 5,000+ lbs donated" },
   { cmd: "python kepler.py", out: "✓ orbital periods: 92% accuracy" },
@@ -573,11 +757,12 @@ export const scopeReadouts = ["3 papers in review", "n≈20 participants", "6 AW
    desk object: the headline of each page before you open it */
 export const peeks: Record<PageId, string[]> = {
   start: ["who I am + a map of this desk", "7 pages, research first"],
-  research: ["3 manuscripts under review: CHI, HRI & T-RO", "NIH-funded study, ~20 participants", "6-service AWS data pipeline"],
-  experience: ["6 roles, 2 current", "USC Interaction Lab + USC DEN", "research · software · teaching · hardware"],
-  projects: ["Sproutsy: AI plant-care app", "Recycode: 5,000+ lbs of clothing donated", "exoplanet periods at 92% accuracy"],
+  research: ["3 manuscripts under review in HCI and robotics", "NIH-funded study, ~20 participants", "6-service AWS data pipeline"],
+  experience: ["7 roles, 3 current", "USC Interaction Lab, USC DEN + a club exec board", "research · software · teaching · hardware"],
+  projects: ["USC nutrition club: site + admin portal", "Sproutsy: AI plant-care app", "Recycode: 5,000+ lbs of clothing donated", "exoplanet periods at 92% accuracy"],
   skills: ["Python · C/C++ · TypeScript · Java", "AWS · PyTorch · React Native", "7 toolkits, from code to hardware"],
   about: ["USC CECS + Math minor, class of 2028", "CS TA, Arduino curriculum, STEM camp", "if I can't draw it, I don't know it yet"],
   awards: ["National Merit Scholarship Winner", "BPA national finalist: cybersecurity", "+ 2 certifications"],
   contact: ["reynapat@usc.edu", "github.com/reyna2323", "in/reynapatelegv"],
+  validation: ["six failure modes", "a value can be present, plausible, and still invalid"],
 };

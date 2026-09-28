@@ -13,6 +13,7 @@ const EVENT = "reyna-visited-change";
 const COMPLETE_EVENT = "reyna-visited-complete";
 const EMPTY: readonly SectionId[] = [];
 const ids = new Set<string>(sections.map((s) => s.id));
+const isSection = (v: string): v is SectionId => ids.has(v);
 
 let cache: readonly SectionId[] | null = null;
 
@@ -28,7 +29,7 @@ function read(): readonly SectionId[] {
 }
 
 export function markVisited(id: PageId | null) {
-  if (!id || id === "start") return;
+  if (!id || !isSection(id)) return; // only the numbered pages light stars
   const current = read();
   if (current.includes(id)) return;
   cache = [...current, id];

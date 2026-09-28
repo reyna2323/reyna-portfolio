@@ -45,14 +45,18 @@ import {
   sections,
   pageOrder,
   pageMeta,
+  validationStudy,
 } from "@/lib/content";
 import { PageLink, usePageNav } from "@/lib/pageNav";
 import { ProjectArtifact } from "./ProjectArtifact";
+import { CountUp } from "./CountUp";
+import { ValidationCaseStudy } from "./ValidationCaseStudy";
 import { useVisited } from "@/lib/visited";
-import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 export const PANEL_META: Record<PageId, { variant: PanelVariant; icon: LucideIcon; wide?: boolean }> = {
   start: { variant: "notebook", icon: Compass },
+  // the deep dive is a page of the engineering notebook, and wide enough for its figures
+  validation: { variant: "notebook", icon: BadgeCheck, wide: true },
   about: { variant: "notebook", icon: Heart },
   experience: { variant: "folder", icon: Briefcase },
   research: { variant: "window", icon: Activity, wide: true },
@@ -138,7 +142,7 @@ export function StartHerePanel() {
             contents
           </h3>
           <p className="text-xs text-ink-muted">
-            click any labeled object on the desk, use the dock, or flip through in order. the little dashed ✦ tags are bonus surprises ♡
+            click any labeled object on the desk, use the dock, or flip through in order. a few unlabeled things are clickable too ♡
           </p>
         </div>
         <ol className="mt-1.5 grid grid-cols-1 gap-x-4 sm:grid-cols-2">
@@ -241,7 +245,7 @@ export function ExperiencePanel() {
   return (
     <div className="space-y-4">
       <p className="text-sm leading-relaxed text-ink-soft">
-        Newest first. A glowing green LED means I&apos;m still in that role today.
+        Current roles first, research leading. A glowing green LED means I&apos;m still in that role today.
       </p>
       <p className="rounded-md border border-copper/25 bg-white/40 px-3 py-2 text-sm text-ink-soft">
         <span className="font-semibold text-ink-strong">Education:</span> {education.school}, {education.degree} ({education.period}).{" "}
@@ -341,37 +345,6 @@ function scrollToId(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "start" });
 }
 
-/** Counts up to a stat's number when the page opens ("~20", "4+" keep their marks). */
-function CountUp({ value }: { value: string }) {
-  const reduced = usePrefersReducedMotion();
-  const m = value.match(/^(\D*)(\d+)(\D*)$/);
-  const target = m ? Number(m[2]) : 0;
-  const counts = m !== null;
-  const [n, setN] = useState(0);
-  useEffect(() => {
-    if (!counts || reduced) return;
-    let raf = 0;
-    const t0 = performance.now();
-    const step = (t: number) => {
-      const p = Math.min(1, (t - t0) / 1200);
-      setN(Math.round(target * (1 - Math.pow(1 - p, 3))));
-      if (p < 1) raf = requestAnimationFrame(step);
-    };
-    raf = requestAnimationFrame(step);
-    return () => cancelAnimationFrame(raf);
-  }, [counts, reduced, target]);
-  if (!m) return <>{value}</>;
-  return (
-    <>
-      <span aria-hidden>
-        {m[1]}
-        {reduced ? target : n}
-        {m[3]}
-      </span>
-      <span className="sr-only">{value}</span>
-    </>
-  );
-}
 
 /* four live traces for the signals tile, each a different shape of body data */
 const SIGNAL_WAVES = [
@@ -636,6 +609,25 @@ export function ResearchPanel() {
         ))}
       </dl>
 
+      {/* the deep dive: a notebook page tucked into the research window */}
+      <PageLink
+        to="validation"
+        className="group relative block -rotate-[0.4deg] rounded-md border border-pink/40 bg-paper px-5 pb-4 pt-5 text-left shadow-[0_18px_36px_-18px_rgba(0,0,0,0.8)] transition-transform graph-paper hover:-translate-y-0.5 hover:rotate-0"
+      >
+        <span aria-hidden className="absolute -top-2 left-10 h-5 w-20 rotate-[-4deg] rounded-sm bg-lavender/70" />
+        <span className="block text-xs font-semibold uppercase tracking-wide text-rose-ink">case study · the validation layer</span>
+        <span className="mt-1 block font-hand text-hand-lg leading-tight text-ink-strong">{validationStudy.title}</span>
+        <span className="mt-1.5 block text-sm text-ink-soft">
+          Six failure modes, the one that fooled me first, and interactive plots where you can break the pipeline yourself.
+        </span>
+        <span className="mt-2 flex flex-wrap items-center justify-between gap-2">
+          <span className="font-hand text-[1.15rem] text-rose-ink">&ldquo;{validationStudy.lesson}&rdquo;</span>
+          <span className="inline-flex items-center gap-1 rounded-full border border-ink-soft/60 px-3 py-1 text-xs font-semibold text-ink-strong transition-colors group-hover:border-ink-strong group-hover:bg-ink-strong/10">
+            read the case study <ArrowRight size={13} aria-hidden />
+          </span>
+        </span>
+      </PageLink>
+
       {/* on this page */}
       <nav aria-label="On this page" className="flex flex-wrap items-center gap-2 text-sm">
         <span className="font-hand text-hand-md text-glass-muted">jump to:</span>
@@ -857,13 +849,108 @@ export function ResearchPanel() {
 
 /* -------------------------------------------------------------- projects */
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const TODAY = new Date();
+const THIS_MONTH = TODAY.getFullYear() * 12 + TODAY.getMonth();
+/** "Jan 2025 to May 2025" (or "... to Present") -> month numbers counted from
+ *  year 0, so spans can be laid on one axis; ongoing ones run to this month */
+function monthSpan(period?: string): { span: [number, number]; ongoing: boolean } | null {
+  const m = period?.match(/^(\w{3}) (\d{4}) to (?:(\w{3}) (\d{4})|Present)$/);
+  if (!m) return null;
+  const from = Number(m[2]) * 12 + MONTHS.indexOf(m[1]);
+  if (!m[3]) return { span: [from, THIS_MONTH + 1], ongoing: true };
+  return { span: [from, Number(m[4]) * 12 + MONTHS.indexOf(m[3]) + 1], ongoing: false };
+}
+
+const TIMELINE_BAR: Record<string, string> = {
+  datasheet: "bg-rosegold",
+  polaroid: "bg-pink",
+  notebook: "bg-lavender",
+  terminal: "bg-mintled",
+};
+
+/** A Gantt-style strip of every project over time; each row jumps to its card. */
+function ProjectTimeline() {
+  const rows = projects.flatMap((p) => {
+    const parsed = monthSpan(p.period);
+    return parsed ? [{ p, span: parsed.span, ongoing: parsed.ongoing }] : [];
+  });
+  if (rows.length === 0) return null;
+  const start = Math.floor(Math.min(...rows.map((r) => r.span[0])) / 12) * 12;
+  const end = Math.max(...rows.map((r) => r.span[1]));
+  const total = end - start;
+  const years = Array.from({ length: Math.ceil(total / 12) }, (_, i) => start / 12 + i);
+  const pct = (month: number) => `${((month - start) / total) * 100}%`;
+
+  const jump = (id: string) => {
+    const card = document.getElementById(`project-${id}`);
+    card?.scrollIntoView({ behavior: "smooth", block: "start" });
+    card?.animate(
+      [{ boxShadow: "0 0 0 0 rgba(236,143,189,0)" }, { boxShadow: "0 0 0 4px rgba(236,143,189,0.7)" }, { boxShadow: "0 0 0 0 rgba(236,143,189,0)" }],
+      { duration: 1400, delay: 350, easing: "ease-out" },
+    );
+  };
+
+  return (
+    <section aria-label="Project timeline" className="rounded-xl border border-lavender/20 bg-[#150c1c]/70 p-3.5">
+      <p className="mb-2 flex items-baseline justify-between font-hand text-hand-md text-glass-muted">
+        <span>the timeline</span>
+        <span className="font-sans text-xs">tap a bar to jump to it</span>
+      </p>
+      <div className="relative">
+        {/* year gridlines */}
+        <div aria-hidden className="pointer-events-none absolute inset-y-0 left-[6.5rem] right-0">
+          {years.map((y) => (
+            <span key={y} className="absolute inset-y-0 border-l border-white/10" style={{ left: pct(y * 12) }}>
+              <span className="absolute -top-0.5 left-1 font-mono text-[0.62rem] text-glass-muted">{y}</span>
+            </span>
+          ))}
+        </div>
+        <ul className="relative space-y-1.5 pt-4">
+          {rows.map(({ p, span, ongoing }, i) => (
+            <li key={p.id}>
+              <button
+                type="button"
+                onClick={() => jump(p.id)}
+                className="group grid w-full grid-cols-[6.5rem_1fr] items-center rounded text-left"
+                aria-label={`${p.title}, ${p.period}. Jump to project.`}
+              >
+                <span className="truncate pr-2 text-xs font-medium text-glass-soft transition-colors group-hover:text-glass-strong">
+                  {p.short ?? p.title}
+                </span>
+                <span className="relative h-4">
+                  <span
+                    className={`grow-x absolute inset-y-0 border border-white/35 ${TIMELINE_BAR[p.artifact]} opacity-80 transition-opacity group-hover:opacity-100 group-hover:shadow-[0_0_12px_rgba(236,143,189,0.6)] ${
+                      ongoing ? "rounded-l-full border-r-0 [mask-image:linear-gradient(to_right,black_70%,transparent)]" : "rounded-full"
+                    }`}
+                    style={{ left: pct(span[0]), width: `${((span[1] - span[0]) / total) * 100}%`, animationDelay: `${i * 0.12}s` }}
+                  />
+                  {/* still going: a live dot at the end of the bar */}
+                  {ongoing && (
+                    <span
+                      aria-hidden
+                      className={`anim-pulse-glow absolute top-1/2 h-2.5 w-2.5 -translate-x-1/2 -translate-y-1/2 rounded-full ${TIMELINE_BAR[p.artifact]} shadow-[0_0_8px_rgba(227,165,139,0.9)]`}
+                      style={{ left: pct(span[1]) }}
+                    />
+                  )}
+                </span>
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  );
+}
+
 export function ProjectsPanel() {
   return (
     <div className="space-y-4">
       <p className="text-sm leading-relaxed text-glass-soft">{projectsIntro}</p>
-      <div className="grid gap-3">
-        {projects.map((p) => (
-          <ProjectArtifact key={p.id} project={p} />
+      <ProjectTimeline />
+      <div className="grid gap-4">
+        {projects.map((p, i) => (
+          <ProjectArtifact key={p.id} project={p} index={i} />
         ))}
       </div>
       <p className="text-sm text-glass-soft">
@@ -1048,8 +1135,11 @@ export function PageFooter({
   onStart?: () => void;
 }) {
   const { open, close } = usePageNav();
-  const i = pageOrder.indexOf(id);
-  const prev = i > 0 ? pageOrder[i - 1] : null;
+  // the case study sits outside the numbered order: it flips back to Research
+  // and forward to whatever follows Research
+  const anchor = id === "validation" ? "research" : id;
+  const i = pageOrder.indexOf(anchor);
+  const prev = id === "validation" ? "research" : i > 0 ? pageOrder[i - 1] : null;
   const next = i < pageOrder.length - 1 ? pageOrder[i + 1] : null;
   const goStart = onStart ?? (() => open("start"));
 
@@ -1087,7 +1177,7 @@ export function PageFooter({
         <span />
       )}
       <span className={`shrink-0 font-hand text-hand-sm ${muted}`}>
-        {id === "start" ? "contents" : `page ${i} of ${sections.length}`}
+        {id === "start" ? "contents" : id === "validation" ? "case study" : `page ${i} of ${sections.length}`}
       </span>
       {next ? (
         <button
@@ -1113,6 +1203,7 @@ export function PageFooter({
 
 export const PANEL_CONTENT: Record<PageId, React.ComponentType> = {
   start: StartHerePanel,
+  validation: ValidationCaseStudy,
   about: AboutPanel,
   experience: ExperiencePanel,
   research: ResearchPanel,

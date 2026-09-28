@@ -10,6 +10,8 @@ import { Dock } from "@/components/desk/Dock";
 import { Entrance } from "@/components/desk/Entrance";
 import { PanelManager } from "@/components/panels/PanelManager";
 import { Constellation } from "@/components/desk/Constellation";
+import { EasterEggs } from "@/components/desk/EasterEggs";
+import { QuickLinks } from "@/components/desk/QuickLinks";
 import { markVisited } from "@/lib/visited";
 
 function hashPage(): PageId | null {
@@ -97,9 +99,11 @@ export default function Home() {
       if (e.key === "Escape") return closePanel();
       if (minimized || e.altKey || e.metaKey || e.ctrlKey) return;
       if ((e.target as HTMLElement | null)?.closest("input, textarea, select, [contenteditable]")) return;
-      const i = pageOrder.indexOf(activePanel);
+      // the case study sits beside Research: ← goes back to it, → continues past it
+      const i = pageOrder.indexOf(activePanel === "validation" ? "research" : activePanel);
       if (e.key === "ArrowRight" && i < pageOrder.length - 1) openPanel(pageOrder[i + 1]);
-      if (e.key === "ArrowLeft" && i > 0) openPanel(pageOrder[i - 1]);
+      if (e.key === "ArrowLeft" && activePanel === "validation") openPanel("research");
+      else if (e.key === "ArrowLeft" && i > 0) openPanel(pageOrder[i - 1]);
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
@@ -108,6 +112,7 @@ export default function Home() {
   return (
     <main className="fixed inset-0 h-dvh w-dvw overflow-hidden" ref={constraintsRef}>
       {!entranceDone && <Entrance onDone={onEntranceDone} />}
+      <EasterEggs />
 
       {isMobile ? (
         <MobileDashboard ready={entranceDone} />
@@ -126,18 +131,21 @@ export default function Home() {
               <button
                 type="button"
                 onClick={() => openPanel("start")}
-                className="anim-pulse-glow shrink-0 rounded-full border border-pink/40 bg-deepplum/70 px-3 py-0.5 font-hand text-hand-md text-glass-strong shadow-lg backdrop-blur transition-colors hover:border-pink hover:bg-plum"
+                className="anim-pulse-glow shrink-0 rounded-full border border-pink/40 bg-deepplum/85 px-3 py-0.5 font-hand text-hand-md text-glass-strong shadow-lg transition-colors hover:border-pink hover:bg-plum"
               >
                 ✦ start here
               </button>
             </div>
             <p className="mt-1 text-desk-label tracking-[0.08em] text-glass-muted" style={{ textShadow: "0 2px 10px rgba(0,0,0,0.75)" }}>
-              researcher @ USC Interaction Lab
+              student @ USC
             </p>
+            {/* the substance in one click, visible from the first second (the dock arrives later) */}
+            <QuickLinks onOpen={openPanel} className="mt-2" />
           </header>
           <DeskScene onOpen={openPanel} />
           {/* the reading constellation, up in the open sky above the notebook */}
-          <div className="pointer-events-none fixed left-1/2 top-3 z-20 -translate-x-1/2">
+          {/* centered, but never under the header's name + quick links on narrower windows */}
+          <div className="pointer-events-none fixed left-[max(50%,28rem)] top-3 z-20 -translate-x-1/2">
             <Constellation current={minimized ? null : activePanel} />
           </div>
           <Dock activePanel={minimized ? null : activePanel} onSelect={handleDockSelect} />

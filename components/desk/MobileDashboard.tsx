@@ -3,17 +3,23 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion, useDragControls, type PanInfo } from "framer-motion";
 import { X } from "lucide-react";
-import { sections, site, isPageId, type PageId, type SectionId } from "@/lib/content";
+import { sections, site, isPageId, pageMeta, type PageId, type SectionId } from "@/lib/content";
+
+/** any page that opens as a sheet (the landing screen is the start page) */
+type SheetId = Exclude<PageId, "start">;
 import { PageNavProvider, syncTitle, writeHash } from "@/lib/pageNav";
 import { PANEL_META, PANEL_CONTENT, PageFooter, StartIntro } from "@/components/panels/SectionPanels";
 import { VARIANT_FAMILY, type PanelVariant } from "@/components/panels/PanelShell";
 import { Atmosphere } from "./Atmosphere";
 import { Constellation } from "./Constellation";
+import { triggerEgg } from "./EasterEggs";
+import { QuickLinks } from "./QuickLinks";
 import { markVisited, useVisited } from "@/lib/visited";
 import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
 /* tile accents sit on the dark desk, so they use colors that read on plum */
-const SECTION_ACCENT: Record<SectionId, string> = {
+const SECTION_ACCENT: Record<SheetId, string> = {
+  validation: "text-rose-ink",
   about: "text-pink",
   experience: "text-rosegold",
   research: "text-lavender",
@@ -43,8 +49,8 @@ const SHEET_BG: Record<PanelVariant, string> = {
 
 /** `ready` flips once the entrance cover has opened, so the tiles float in where people can see them. */
 export function MobileDashboard({ ready = true }: { ready?: boolean }) {
-  const [open, setOpen] = useState<SectionId | null>(null);
-  const openRef = useRef<SectionId | null>(null);
+  const [open, setOpen] = useState<SheetId | null>(null);
+  const openRef = useRef<SheetId | null>(null);
   // true while the open sheet has its own history entry, so the phone's
   // back gesture closes the sheet instead of leaving the site
   const pushedRef = useRef(false);
@@ -115,7 +121,7 @@ export function MobileDashboard({ ready = true }: { ready?: boolean }) {
   }, [open, close]);
 
   const activeMeta = open ? PANEL_META[open] : null;
-  const activeSection = open ? sections.find((s) => s.id === open) : null;
+  const activeSection = open ? pageMeta(open) : null;
   const Content = open ? PANEL_CONTENT[open] : null;
   const ActiveIcon = activeMeta?.icon ?? null;
   const isDark = activeMeta ? VARIANT_FAMILY[activeMeta.variant] === "dark" : false;
@@ -141,10 +147,16 @@ export function MobileDashboard({ ready = true }: { ready?: boolean }) {
         >
           <div className="flex items-center justify-center gap-2.5">
             <span className="text-orchid anim-sparkle" style={{ fontSize: 13, opacity: 0.72 }} aria-hidden>✦</span>
-            <h1 className="font-hand text-hand-xl text-blush drop-shadow-md">{site.name}</h1>
+            {/* phones have no keyboard for the secret words, so the name itself is the secret: tap it */}
+            <h1 className="font-hand text-hand-xl text-blush drop-shadow-md">
+              <button type="button" onClick={() => triggerEgg("fighton")} className="rounded-md px-1 active:scale-95">
+                {site.name}
+              </button>
+            </h1>
             <span className="text-lavender anim-sparkle" style={{ fontSize: 11, opacity: 0.58, animationDelay: "1.6s" }} aria-hidden>✧</span>
           </div>
-          <p className="mt-0.5 text-sm tracking-[0.04em] text-glass-muted">researcher @ USC Interaction Lab · CECS &apos;28</p>
+          <p className="mt-0.5 text-sm tracking-[0.04em] text-glass-muted">student @ USC · CECS &apos;28</p>
+          <QuickLinks onOpen={show} className="mt-2.5 justify-center" />
           <div className="mt-2 flex justify-center">
             <Constellation current={open} compact />
           </div>
@@ -153,7 +165,8 @@ export function MobileDashboard({ ready = true }: { ready?: boolean }) {
         <div className="relative z-10 flex-1 overflow-y-auto overscroll-contain px-4" style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom))" }}>
           {/* who I am, before anything else */}
           <h2 className="sr-only">About me</h2>
-          <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 backdrop-blur-sm">
+          {/* no backdrop blur on phones: re-blurring the animated sky every frame is what makes scrolling stutter */}
+          <div className="rounded-2xl border border-white/10 bg-[#2a1733]/80 p-4">
             <StartIntro tone="dark" />
           </div>
 
@@ -182,7 +195,7 @@ export function MobileDashboard({ ready = true }: { ready?: boolean }) {
                     onClick={() => show(section.id)}
                     whileTap={{ scale: 0.93 }}
                     transition={{ type: "spring", stiffness: 420, damping: 22 }}
-                    className={`flex h-full w-full flex-col items-start gap-2 rounded-2xl border bg-white/[0.07] p-4 ${wide ? "border-pink/50" : "border-white/10"} text-left backdrop-blur-sm ${glow}`}
+                    className={`flex h-full w-full flex-col items-start gap-2 rounded-2xl border bg-[#2e1a38]/85 p-4 ${wide ? "border-pink/50" : "border-white/10"} text-left ${glow}`}
                   >
                     <span className="flex w-full items-center justify-between">
                       <Icon size={20} className={accent} aria-hidden />
@@ -216,7 +229,7 @@ export function MobileDashboard({ ready = true }: { ready?: boolean }) {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={close}
-              className="fixed inset-0 z-40 bg-black/50 backdrop-blur-[2px]"
+              className="fixed inset-0 z-40 bg-black/60"
             />
           )}
         </AnimatePresence>

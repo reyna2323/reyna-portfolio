@@ -39,16 +39,12 @@ export function WiresArt({ className = "" }: { className?: string }) {
         [550, 130],
         [500, 100],
       ].map(([cx, cy], i) => (
-        <circle
-          key={`${cx}-${cy}`}
-          cx={cx}
-          cy={cy}
-          r="3.5"
-          fill="var(--led)"
-          className="anim-led"
-          style={{ animationDelay: `${i * 0.8}s`, filter: "drop-shadow(0 0 4px var(--led))" }}
-          opacity="0.7"
-        />
+        <g key={`${cx}-${cy}`}>
+          {/* static halo instead of a glow filter: these wires span the whole desk,
+              and a filtered blink here meant redrawing a screen-wide drawing each frame */}
+          <circle cx={cx} cy={cy} r="7" fill="var(--led)" opacity="0.2" />
+          <circle cx={cx} cy={cy} r="3.5" fill="var(--led)" className="anim-led" style={{ animationDelay: `${i * 0.8}s` }} opacity="0.7" />
+        </g>
       ))}
     </svg>
   );

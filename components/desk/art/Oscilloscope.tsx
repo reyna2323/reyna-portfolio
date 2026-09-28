@@ -48,19 +48,26 @@ export function OscilloscopeArt() {
               </pattern>
             </defs>
             <rect width="160" height="80" fill="url(#scopegrid)" />
-            <g className="anim-scope" style={{ filter: "drop-shadow(0 0 3px var(--led))" }}>
-              <path d={WAVE} fill="none" stroke="var(--led)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path
-                d={WAVE}
-                transform="translate(160 0)"
-                fill="none"
-                stroke="var(--led)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </g>
           </svg>
+          {/* the trace: two copies side by side in a double-width strip that slides
+              left as one GPU layer, so the glowing line is drawn once, not every frame */}
+          <div className="scope-slide absolute inset-y-0 left-0 w-[200%]" aria-hidden>
+            <svg viewBox="0 0 320 80" preserveAspectRatio="none" className="h-full w-full" style={{ filter: "drop-shadow(0 0 3px var(--led))" }}>
+              {[0, 160].map((dx) => (
+                <path
+                  key={dx}
+                  d={WAVE}
+                  transform={`translate(${dx} 0)`}
+                  fill="none"
+                  stroke="var(--led)"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  vectorEffect="non-scaling-stroke"
+                />
+              ))}
+            </svg>
+          </div>
           <span className="absolute right-1 top-0.5 font-mono text-desk-micro text-glass-muted">CH1 · 2ms</span>
           <span className="anim-flicker absolute left-1 top-0.5 font-mono text-desk-micro text-mintled">
             <span key={reading} className="anim-fade-up block">

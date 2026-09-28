@@ -14,7 +14,7 @@ export function CaseFileTabArt() {
         <div className="flex h-full flex-col justify-between p-[10%]">
           <div>
             <p className="font-hand text-hand-lg text-ink-strong">résumé.pdf</p>
-            <p className="mt-[2%] font-mono text-desk-micro text-ink-muted">confidential-ish · v2026</p>
+            <p className="mt-[2%] font-mono text-desk-micro text-ink-muted">v2026</p>
           </div>
           <div className="flex items-center gap-[6%]">
             <span className="h-[10%] w-[22%] rounded-sm bg-plum/15" />

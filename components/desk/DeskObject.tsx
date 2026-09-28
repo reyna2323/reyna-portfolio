@@ -49,7 +49,7 @@ export function DeskObject({
         if (!reduced) setRippleKey((k) => k + 1);
         onOpen();
       }}
-      aria-label={ariaLabel}
+      aria-label={`${index ? `${index} ` : ""}${label.replace(/[✦✧♡]/g, "").trim()}${featured ? ", featured" : ""}. ${ariaLabel}`}
       aria-describedby={peek ? peekId : undefined}
       className="group pointer-events-auto relative block w-full cursor-pointer text-left"
       whileHover={reduced ? undefined : { y: -9, scale: 1.045, rotate: tilt }}
@@ -65,7 +65,7 @@ export function DeskObject({
       )}
       {/* the art never takes clicks itself: its shadows and glows spill past the
           object, and they must not catch clicks meant for a neighbour's tag */}
-      <div className="pointer-events-none transition-[filter] duration-300 group-hover:drop-shadow-[0_14px_34px_rgba(239,156,196,0.5)] group-focus-visible:drop-shadow-[0_14px_34px_rgba(239,156,196,0.5)]">
+      <div aria-hidden className="pointer-events-none transition-[filter] duration-300 group-hover:drop-shadow-[0_14px_34px_rgba(239,156,196,0.5)] group-focus-visible:drop-shadow-[0_14px_34px_rgba(239,156,196,0.5)]">
         {children}
       </div>
       {/* on hover or focus, a warm pool of lamp light brightens on the desk under the object */}
@@ -112,8 +112,8 @@ export function DeskObject({
       )}
       <span
         aria-hidden
-        className={`absolute left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-0.5 font-hand text-hand-md desk-tag leading-snug text-glass-strong shadow-[0_6px_16px_-6px_rgba(0,0,0,0.6)] backdrop-blur-sm transition-all duration-300 group-hover:border-pink/80 group-hover:bg-plum group-focus-visible:border-pink/80 group-focus-visible:bg-plum ${
-          featured ? "border-pink/80 bg-plum/90" : "border-pink/30 bg-deepplum/75"
+        className={`absolute left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 whitespace-nowrap rounded-full border px-2.5 py-0.5 font-hand text-hand-md desk-tag leading-snug text-glass-strong shadow-[0_6px_16px_-6px_rgba(0,0,0,0.6)] transition-colors duration-300 group-hover:border-pink/80 group-hover:bg-plum group-focus-visible:border-pink/80 group-focus-visible:bg-plum ${
+          featured ? "border-pink/80 bg-plum/90" : "border-pink/30 bg-deepplum/85"
         } ${
           labelBelow ? "-bottom-9" : "-top-10"
         } ${labelClassName}`}

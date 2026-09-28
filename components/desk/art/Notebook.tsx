@@ -366,14 +366,6 @@ export function NotebookArt() {
             aria-hidden
           >· lab notes ·</p>
 
-          {/* tiny margin joke — the one sliver of open space beside the heading */}
-          <p
-            className="pointer-events-none absolute rotate-[3deg] font-hand text-ink-muted"
-            style={{ left: "62%", top: "8%", width: "15%", fontSize: "max(4.5px, calc(var(--su) * 0.34))", lineHeight: 1.2, opacity: 0.55 }}
-            aria-hidden
-          >
-            ideas &gt; sleep
-          </p>
           {/* sticky tab */}
           <div
             className="pointer-events-none absolute -right-px rounded-r-sm"

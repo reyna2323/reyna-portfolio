@@ -349,6 +349,14 @@ a[href] {
 .anim-scope {
   animation: scope-scroll 4s linear infinite;
 }
+/* the oscilloscope trace strip (double width), slid by half its width per loop */
+.scope-slide {
+  animation: scope-slide 4s linear infinite;
+  will-change: transform;
+}
+@keyframes scope-slide {
+  to { transform: translateX(-50%); }
+}
 .anim-bokeh {
   animation: bokeh-drift 14s ease-in-out infinite;
 }
@@ -648,6 +656,146 @@ a[href] {
 @keyframes wave-scroll {
   to { transform: translateX(-40px); }
 }
+/* project figures -------------------------------------------------------- */
+/* QR check-in: the beam sweeps the code, a check-in pops on the phone, members fill in */
+.qr-beam {
+  animation: qr-beam 2.4s ease-in-out infinite;
+}
+@keyframes qr-beam {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(63px); }
+}
+.checkin-pop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: checkin-pop 2.4s ease-out infinite;
+}
+@keyframes checkin-pop {
+  0%, 40% { opacity: 0; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1.08); }
+  58%, 85% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1); }
+}
+.member-dot {
+  opacity: 0.15;
+  animation: member-in 4.8s ease-out infinite;
+}
+@keyframes member-in {
+  0% { opacity: 0.15; }
+  6%, 88% { opacity: 1; }
+  100% { opacity: 0.15; }
+}
+/* analytics dashboard: bars grow from the baseline, the task ring fills, the leaderboard slides in */
+.bar-grow {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: bar-grow 5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+@keyframes bar-grow {
+  0% { transform: scaleY(0); }
+  22%, 85% { transform: scaleY(1); }
+  100% { transform: scaleY(0); }
+}
+.bar-grow-x {
+  transform-box: fill-box;
+  transform-origin: left;
+  animation: bar-grow-x 5s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+@keyframes bar-grow-x {
+  0% { transform: scaleX(0); }
+  22%, 85% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+.ring-fill {
+  stroke-dasharray: 1;
+  animation: ring-fill 5s ease-out infinite;
+}
+@keyframes ring-fill {
+  0% { stroke-dashoffset: 1; }
+  30%, 85% { stroke-dashoffset: 0.22; }
+  100% { stroke-dashoffset: 1; }
+}
+
+/* Sproutsy: rain falls, the stem draws up, leaves and a bud unfurl, then it resets */
+.rain-drop {
+  animation: rain-fall 1.2s linear infinite;
+}
+@keyframes rain-fall {
+  from { transform: translateY(0); opacity: 0; }
+  20% { opacity: 1; }
+  to { transform: translateY(14px); opacity: 0; }
+}
+.sprout-stem {
+  stroke-dasharray: 1;
+  animation: sprout-grow 6s ease-out infinite;
+}
+@keyframes sprout-grow {
+  0% { stroke-dashoffset: 1; opacity: 1; }
+  35%, 88% { stroke-dashoffset: 0; opacity: 1; }
+  100% { stroke-dashoffset: 0; opacity: 0; }
+}
+.sprout-leaf {
+  animation: leaf-unfurl 6s ease-out infinite;
+}
+@keyframes leaf-unfurl {
+  0%, 30% { transform: scale(0); opacity: 1; }
+  45%, 88% { transform: scale(1); opacity: 1; }
+  100% { transform: scale(1); opacity: 0; }
+}
+/* Recycode: clothes drop into the donation box one after another */
+.shirt-drop {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: shirt-drop 2.7s ease-in infinite;
+}
+@keyframes shirt-drop {
+  0% { transform: translateY(-12px) rotate(-12deg); opacity: 0; }
+  12% { opacity: 1; }
+  70% { transform: translateY(58px) rotate(14deg); opacity: 1; }
+  78%, 100% { transform: translateY(66px) rotate(14deg); opacity: 0; }
+}
+
+/* easter eggs (see components/desk/EasterEggs.tsx) ----------------------- */
+.egg-burst {
+  left: 0;
+  top: 0;
+  opacity: 0;
+  animation: egg-burst 1.6s cubic-bezier(0.15, 0.8, 0.3, 1) forwards;
+}
+@keyframes egg-burst {
+  0% { transform: translate(-50%, -50%) scale(0.2); opacity: 0; }
+  15% { opacity: 1; }
+  75% { opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--egg-x)), calc(-50% + var(--egg-y) + 60px)) scale(1) rotate(20deg); opacity: 0; }
+}
+.egg-dim {
+  opacity: 0;
+  animation: egg-dim 2.8s ease-in-out forwards;
+}
+@keyframes egg-dim {
+  0%, 30% { opacity: 0; }
+  50% { opacity: 0.38; }
+  70%, 100% { opacity: 0; }
+}
+.egg-planet {
+  left: 0;
+  animation: egg-planet 2.8s linear forwards;
+}
+@keyframes egg-planet {
+  from { transform: translate(-15vw, -50%); }
+  to { transform: translate(115vw, -50%); }
+}
+.egg-rain {
+  animation-name: egg-rain;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+@keyframes egg-rain {
+  from { transform: translateY(0) rotate(0deg); opacity: 1; }
+  85% { opacity: 1; }
+  to { transform: translateY(110vh) rotate(200deg); opacity: 0; }
+}
+
 /* the skills composition bar grows in from the left */
 .grow-x {
   transform-origin: left;
@@ -731,6 +879,32 @@ a[href] {
   .pip {
     animation: none;
     opacity: 1;
+  }
+  /* project figures hold a finished frame */
+  .scope-slide,
+  .qr-beam,
+  .checkin-pop,
+  .rain-drop,
+  .sprout-leaf,
+  .bar-grow,
+  .bar-grow-x {
+    animation: none;
+  }
+  .ring-fill {
+    animation: none;
+    stroke-dashoffset: 0.22;
+  }
+  .member-dot {
+    animation: none;
+    opacity: 1;
+  }
+  .sprout-stem {
+    animation: none;
+    stroke-dasharray: none;
+  }
+  .shirt-drop {
+    animation: none;
+    transform: translateY(24px) rotate(8deg);
   }
   .ecg-sweep {
     stroke-dasharray: none;

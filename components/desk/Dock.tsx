@@ -19,7 +19,7 @@ export function Dock({ activePanel, onSelect }: DockProps) {
       transition={{ delay: 1.4, type: "spring", stiffness: 200, damping: 22 }}
       className="fixed inset-x-0 bottom-4 z-50 flex justify-center px-3"
     >
-      <div className="flex max-w-full items-center gap-1 overflow-x-auto rounded-2xl border border-pink/25 bg-deepplum/70 px-2 py-2 shadow-[0_18px_40px_-16px_rgba(0,0,0,0.6)] backdrop-blur-md">
+      <div className="flex max-w-full items-center gap-1 overflow-x-auto rounded-2xl border border-pink/25 bg-deepplum/90 px-2 py-2 shadow-[0_18px_40px_-16px_rgba(0,0,0,0.6)]">
         {[startPage, ...sections].map((s, i) => {
           const Icon = PANEL_META[s.id].icon;
           const active = activePanel === s.id;

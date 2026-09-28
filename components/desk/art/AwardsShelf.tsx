@@ -27,7 +27,8 @@ export function AwardsShelfArt() {
         <rect x="42" y="98" width="16" height="9" fill="#8c4a2e" />
         <rect x="34" y="107" width="32" height="8" rx="2" fill="url(#trophyGold)" stroke="#8c4a2e" strokeWidth="1.5" />
         <text x="50" y="113" textAnchor="middle" fontFamily="var(--font-caveat)" fontSize="5" fill="#5c2f18" opacity="0.7">est. 2024</text>
-        <circle cx="50" cy="46" r="3.4" fill="var(--led)" className="anim-led" style={{ filter: "drop-shadow(0 0 5px var(--led))" }} />
+        <circle cx="50" cy="46" r="7" fill="var(--led)" opacity="0.28" />
+        <circle cx="50" cy="46" r="3.4" fill="var(--led)" className="anim-led" />
         {/* little celebratory sparkles orbiting the medal */}
         <circle cx="24" cy="20" r="1.4" fill="var(--pink)" className="anim-twinkle" style={{ animationDelay: "0.4s" }} />
         <circle cx="78" cy="24" r="1.2" fill="var(--lavender)" className="anim-twinkle" style={{ animationDelay: "1.1s" }} />

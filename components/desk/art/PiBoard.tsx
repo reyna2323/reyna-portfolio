@@ -60,15 +60,11 @@ export function PiBoardArt() {
         <circle cx="64" cy="112" r="5" fill="#c9b2e9" stroke="#a274d6" strokeWidth="1.5" />
         {/* status LEDs, with a soft expanding ring behind the power light */}
         <circle cx="160" cy="114" r="8" fill="none" stroke="var(--led)" strokeWidth="0.8" className="anim-ring-pulse" style={{ transformOrigin: "160px 114px" }} />
-        <circle cx="160" cy="114" r="3.4" fill="var(--led)" className="anim-led" style={{ filter: "drop-shadow(0 0 5px var(--led))" }} />
-        <circle
-          cx="172"
-          cy="114"
-          r="3.4"
-          fill="var(--mintled)"
-          className="anim-led"
-          style={{ filter: "drop-shadow(0 0 5px var(--mintled))", animationDelay: "1.2s" }}
-        />
+        {/* a static halo stands in for a glow filter, so the blinking core is cheap to animate */}
+        <circle cx="160" cy="114" r="7" fill="var(--led)" opacity="0.28" />
+        <circle cx="160" cy="114" r="3.4" fill="var(--led)" className="anim-led" />
+        <circle cx="172" cy="114" r="7" fill="var(--mintled)" opacity="0.28" />
+        <circle cx="172" cy="114" r="3.4" fill="var(--mintled)" className="anim-led" style={{ animationDelay: "1.2s" }} />
         <text x="140" y="124" fontFamily="var(--font-geist-mono)" fontSize="6" fill="#8c4a6e">
           PWR ACT
         </text>
