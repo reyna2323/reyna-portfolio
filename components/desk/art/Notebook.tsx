@@ -149,8 +149,8 @@ export function NotebookArt() {
               <p className="font-hand text-desk-label text-rose-ink" style={{ opacity: 0.78 }}>currently →</p>
               <p className="font-hand text-desk-micro text-ink-muted">· SAR robot + stress trajectory ML</p>
               <p className="font-hand text-desk-micro text-ink-muted">· exoplanet paper draft v2</p>
-              <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.8 }}>· this portfolio (meta, I know)</p>
-              <p className="font-hand text-desk-micro text-ink-muted line-through" style={{ opacity: 0.65 }}>· do it all in assembly <span className="text-copper-ink no-underline">(so much no)</span></p>
+              <p className="font-hand text-desk-micro text-copper-ink" style={{ opacity: 0.8 }}>· nutrition club site + admin portal ♡</p>
+              <p className="font-hand text-desk-micro text-ink-muted" style={{ opacity: 0.8 }}>· filming lectures @ USC DEN ✦</p>
             </div>
 
             {/* circuit-heartbeat with a PROPER heart shape */}

@@ -231,7 +231,7 @@ export function DeskScene({ onOpen }: { onOpen: (id: PageId) => void }) {
           breadboard — verified clear of both via real bounding boxes.
           for anyone who takes "the more you look" literally: click it and it
           leans in and turns up a note hidden on the desk. */}
-      <div className="pointer-events-none absolute left-[7%] top-[max(33.5%,320px)] z-[1] w-[calc(var(--su)*5)] opacity-90">
+      <div className="pointer-events-none absolute left-[calc(6.5%+var(--su)*17)] top-[40%] z-[1] w-[calc(var(--su)*4)] opacity-90">
         <ParallaxLayer depth={0.9}>
           <div className="anim-float" style={{ animationDelay: "1.8s" }}>
             <button

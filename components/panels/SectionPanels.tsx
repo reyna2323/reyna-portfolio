@@ -419,12 +419,16 @@ function StatViz({ kind }: { kind?: string }) {
 }
 
 const REVIEW_STEPS = ["written", "submitted", "under review", "decision"];
+const STATUS_STEP: Record<"writing" | "under review", number> = { writing: 0, "under review": 2 };
 
-/** Where a paper is in the review process: done steps in mint, the current one pulsing pink. */
-function ReviewPipeline({ current = 2 }: { current?: number }) {
+/** Where a paper is in the review process: done steps in mint, the current one pulsing pink.
+ *  A paper still being drafted sits on the first step, which reads "writing". */
+function ReviewPipeline({ status }: { status: "writing" | "under review" }) {
+  const current = STATUS_STEP[status];
+  const steps = REVIEW_STEPS.map((s, i) => (i === 0 && current === 0 ? "writing" : s));
   return (
-    <ol aria-label={`Status: ${REVIEW_STEPS[current]}`} className="mt-1.5 flex flex-wrap items-center gap-y-1">
-      {REVIEW_STEPS.map((step, i) => (
+    <ol aria-label={`Status: ${steps[current]}`} className="mt-1.5 flex flex-wrap items-center gap-y-1">
+      {steps.map((step, i) => (
         <li key={step} className="flex items-center">
           {i > 0 && <span aria-hidden className={`mx-1 h-px w-3 sm:w-5 ${i <= current ? "bg-circuit/60" : "bg-white/15"}`} />}
           <span
@@ -694,13 +698,29 @@ export function ResearchPanel() {
               <PenLine size={15} className="mt-0.5 shrink-0 text-lavender" aria-hidden />
               <div className="min-w-0 flex-1">
                 <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-1.5">
-                  <p className="text-sm font-semibold text-glass-strong">{p.venue}</p>
-                  <span className="flex shrink-0 items-center gap-2.5">
-                    <AuthorStrip position={p.position} />
-                    <span className="rounded-full bg-pink/15 px-2.5 py-0.5 text-xs font-medium text-glass-strong">{p.role}</span>
-                  </span>
+                  <p className="text-sm font-semibold text-glass-strong">
+                    {p.venue}
+                    {p.kind && <span className="ml-2 font-mono text-[0.7rem] font-normal text-glass-muted">{p.kind}</span>}
+                  </p>
+                  {p.position !== undefined && p.role ? (
+                    <span className="flex shrink-0 items-center gap-2.5">
+                      <AuthorStrip position={p.position} />
+                      <span className="rounded-full bg-pink/15 px-2.5 py-0.5 text-xs font-medium text-glass-strong">{p.role}</span>
+                    </span>
+                  ) : (
+                    p.status === "writing" && (
+                      <span className="shrink-0 rounded-full bg-lavender/15 px-2.5 py-0.5 text-xs font-medium text-glass-strong">research in progress</span>
+                    )
+                  )}
                 </div>
-                <ReviewPipeline />
+                <ReviewPipeline status={p.status} />
+                {p.question && <p className="mt-2 font-hand text-hand-md leading-snug text-pink">&ldquo;{p.question}&rdquo;</p>}
+                {p.detail && <p className="mt-1.5 text-sm leading-relaxed text-glass-soft">{p.detail}</p>}
+                {p.tools && (
+                  <p className="mt-1.5 font-mono text-[0.7rem] text-glass-muted">
+                    <span className="text-circuit">{p.toolsLabel ?? "tools"}:</span> {p.tools.join(" · ")}
+                  </p>
+                )}
               </div>
             </li>
           ))}

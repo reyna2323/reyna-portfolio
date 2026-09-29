@@ -114,7 +114,7 @@ export function isPageId(value: string): value is PageId {
 export const intro = {
   greeting: "hi, I'm Reyna ♡",
   summary:
-    "I'm an undergraduate researcher at the USC Viterbi Interaction Lab, and I study Computer Engineering & Computer Science with a Math minor at USC (class of 2028).",
+    "I'm an undergraduate researcher at the USC Viterbi Interaction Lab, and I study Computer Engineering & Computer Science with a Mathematics minor at USC (class of 2028).",
   featured: {
     kicker: "featured · my research",
     title: "Wearable data + ML for a robot that helps with anxiety",
@@ -191,7 +191,7 @@ export const experience: Role[] = [
       "Building Python ML pipelines to preprocess and model physiological heart-rate signals across hundreds of sessions",
       "Automating Fitbit compliance tracking and reminder emails (Python, AWS SES) for a 20-participant NIH-funded study",
       "Developing statistical analysis models forecasting stress trajectories for a socially assistive robot delivering CBT exercises",
-      "Second author on two manuscripts and 11th author on a third, all under review in human-computer interaction and robotics",
+      "Second author on two manuscripts and eleventh author on a third, all under review in human-computer interaction and robotics",
     ],
     more: { to: "research", label: "see all 20+ things I work on in the lab" },
   },
@@ -311,11 +311,40 @@ export const research = {
     { step: "Share", detail: "figures, papers, and one day, robot behavior", tools: ["Matplotlib", "writing", "posters"] },
   ],
   publications: [
-    // position = where I appear in the author list (drawn as a little strip of dots)
+    // position = where I appear in the author list (drawn as a little strip of dots; leave it out if not settled)
+    // status = where the paper is: "writing" or "under review"
     { venue: "Manuscript in human-computer interaction", role: "Second author", position: 2, status: "under review" },
     { venue: "Manuscript in human-robot interaction", role: "Second author", position: 2, status: "under review" },
-    { venue: "Manuscript in robotics", role: "11th author", position: 11, status: "under review" },
-  ],
+    { venue: "Manuscript in robotics", role: "Eleventh author", position: 11, status: "under review" },
+    {
+      venue: "Probing Internal Representations in Video-Language Models",
+      status: "writing",
+      question: "How do prompts change what a model represents internally?",
+      detail:
+        "Investigating how prompting changes the internal representations of video-language models. Using LLaVA-NeXT-Video, I extract hidden representations across transformer layers and train linear probes to measure how emotion-related information is encoded under different prompt conditions. By comparing these representations with the model's final predictions, this work examines whether prompts change what a model internally represents even when those changes are not visible from output accuracy alone.",
+      tools: ["PyTorch", "LLaVA-NeXT-Video", "Linear probing", "Representation analysis", "Python"],
+    },
+    {
+      venue: "Modeling Stress as a Dynamical System",
+      kind: "Scoping review",
+      status: "writing",
+      question: "Can stress be modeled as a trajectory instead of a label?",
+      detail:
+        "Investigating how computational models capture the way stress and emotion regulation evolve over time from wearable physiological signals. I am conducting a scoping review of dynamical-systems approaches, including recurrent neural networks, continuous hidden Markov models, POMDPs, nonlinear time-series methods, and related state-based models. The review maps which models have been paired with signals such as heart rate, HRV, electrodermal activity, and respiration, how regulation trajectories are defined and validated, and whether these models are used for passive inference or adaptive closed-loop interventions.",
+      tools: ["Dynamical systems", "Wearable sensing", "Affective computing", "Time-series modeling", "Stress regulation"],
+      toolsLabel: "focus",
+    },
+  ] as {
+    venue: string;
+    kind?: string; // e.g. "Scoping review", shown next to the title
+    role?: string;
+    position?: number;
+    status: "writing" | "under review";
+    question?: string; // the research question, shown as a handwritten hook
+    detail?: string;
+    tools?: string[];
+    toolsLabel?: string; // defaults to "tools"
+  }[],
   publicationTopics:
     "The two second-author papers cover wearable physiological data during robot-guided CBT, and participatory design with therapists and university students.",
   areas: {
@@ -374,6 +403,22 @@ export const research = {
       detail:
         "Contributed to modeling work that predicts how stress changes during SAR-supported CBT, with the goal of eventually informing how the robot behaves in the moment.",
       skills: ["Predictive modeling", "Sequential data", "Human-AI systems"],
+    },
+    {
+      featured: true,
+      area: "analysis",
+      title: "Probing internal representations in video-language models",
+      detail:
+        "Research in progress, paper in the writing stage. When a task is described differently to a video-language model, does it represent the task differently inside, even if its answer looks the same? I extract LLaVA-NeXT-Video's hidden representations across transformer layers under different prompt conditions and train linear probes to see where emotion information appears, comparing that with the model's final predictions.",
+      skills: ["PyTorch", "LLaVA-NeXT-Video", "Linear probing", "Representation analysis", "Python", "Interpretability"],
+    },
+    {
+      featured: true,
+      area: "analysis",
+      title: "Scoping review: modeling stress as a dynamical system",
+      detail:
+        "Paper in the writing stage. Can stress be modeled as a trajectory instead of a label? I'm mapping how dynamical-systems approaches (RNNs, continuous HMMs, POMDPs, nonlinear time-series methods) pair with wearable signals like HR, HRV, EDA, and respiration, how regulation trajectories are defined and validated, and whether models only infer state or drive closed-loop interventions.",
+      skills: ["Dynamical systems", "Wearable sensing", "Affective computing", "Time-series modeling", "Stress regulation", "Literature review"],
     },
     {
       featured: true,
