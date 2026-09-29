@@ -122,7 +122,7 @@ export const intro = {
       "I build the data pipelines, analyses, and human-centered research behind a socially assistive robot that coaches people through CBT, in an NIH-funded study.",
     stats: [
       { value: "3", label: "manuscripts under review" },
-      { value: "~20", label: "study participants" },
+      { value: "2", label: "papers in progress" },
       { value: "6", label: "AWS services in my pipeline" },
     ],
   },
@@ -298,7 +298,7 @@ export const research = {
   // viz = the little instrument drawn on each stat tile
   stats: [
     { value: "3", label: "manuscripts under review in human-computer interaction and robotics", viz: "papers" },
-    { value: "~20", label: "participants in a longitudinal NIH-funded study", viz: "people" },
+    { value: "2", label: "papers in progress: VLM interpretability & a dynamical-systems review", viz: "drafting" },
     { value: "6", label: "AWS services in my automated data pipeline", viz: "services" },
     { value: "4+", label: "physiological signals aligned to sessions: HR, EDA, skin temp, SpO₂", viz: "signals" },
   ],
@@ -796,13 +796,13 @@ export const terminalScript: { cmd: string; out: string }[] = [
 ];
 
 /* readouts that cycle on the oscilloscope screen, like live measurements */
-export const scopeReadouts = ["3 papers in review", "n≈20 participants", "6 AWS services", "HR·EDA·TEMP·SpO₂"];
+export const scopeReadouts = ["3 papers in review", "2 papers in progress", "6 AWS services", "HR·EDA·TEMP·SpO₂"];
 
 /* at-a-glance facts on the little index card that appears when you hover a
    desk object: the headline of each page before you open it */
 export const peeks: Record<PageId, string[]> = {
   start: ["who I am + a map of this desk", "7 pages, research first"],
-  research: ["3 manuscripts under review in HCI and robotics", "NIH-funded study, ~20 participants", "6-service AWS data pipeline"],
+  research: ["3 manuscripts under review in HCI and robotics", "2 papers in progress: VLMs & dynamical systems", "6-service AWS data pipeline"],
   experience: ["7 roles, 3 current", "USC Interaction Lab, USC DEN + a club exec board", "research · software · teaching · hardware"],
   projects: ["USC nutrition club: site + admin portal", "Sproutsy: AI plant-care app", "Recycode: 5,000+ lbs of clothing donated", "exoplanet periods at 92% accuracy"],
   skills: ["Python · C/C++ · TypeScript · Java", "AWS · PyTorch · React Native", "7 toolkits, from code to hardware"],

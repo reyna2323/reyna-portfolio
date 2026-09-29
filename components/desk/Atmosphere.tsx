@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { motion, useTransform } from "framer-motion";
+import { motion, useSpring } from "framer-motion";
 import { usePointer } from "./Parallax";
 import { usePrefersReducedMotion } from "@/lib/useMediaQuery";
 
@@ -172,12 +172,11 @@ export function Atmosphere() {
   );
 
   const reduced = usePrefersReducedMotion();
-  const { px, py } = usePointer();
-  // The glow is half the scene's size; moving it with transforms (a percentage
-  // of its own size) keeps it on the GPU instead of re-laying-out every frame.
-  // Its centre lands at 50% ± 38% of the scene, same as before.
-  const glowX = useTransform(px, (v) => `${50 + v * 76}%`);
-  const glowY = useTransform(py, (v) => `${50 + v * 76}%`);
+  const { rawX, rawY } = usePointer();
+  // The glow sits centred on the cursor, trailing it on a quick spring. It's a
+  // fixed-size circle moved only with transforms, so it stays on the GPU.
+  const glowX = useSpring(rawX, { stiffness: 260, damping: 30 });
+  const glowY = useSpring(rawY, { stiffness: 260, damping: 30 });
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
@@ -190,12 +189,10 @@ export function Atmosphere() {
           The gradient itself is the softness; no blur filter to recompute. */}
       {!reduced && (
         <motion.div
-          className="absolute left-0 top-0 h-[50%] w-[50%] rounded-full"
+          className="absolute -left-[22rem] -top-[22rem] h-[44rem] w-[44rem] rounded-full"
           style={{
             x: glowX,
             y: glowY,
-            translateX: "-50%",
-            translateY: "-50%",
             background: "radial-gradient(circle, rgba(236,143,189,0.13), rgba(236,143,189,0.05) 40%, transparent 70%)",
           }}
         />

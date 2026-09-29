@@ -356,6 +356,43 @@ const SIGNAL_WAVES = [
 
 /** The little instrument drawn on each research stat tile, showing the number instead of just saying it. */
 function StatViz({ kind }: { kind?: string }) {
+  if (kind === "drafting") {
+    // two notebook pages, each writing itself line by line while a tiny pencil scribbles along
+    return (
+      <span aria-hidden className="flex items-end gap-1.5 pr-1">
+        {[0, 1].map((page) => (
+          // outer span moves (lifts while it's this page's turn), inner span keeps the resting tilt
+          <span key={page} className="draft-page relative" style={{ animationDelay: `${page * 2.4}s` }}>
+          <span
+            className="relative flex h-7 w-[22px] flex-col gap-[3px] rounded-[2px] bg-petal/90 p-[3px] pt-[4px] shadow-[0_2px_6px_rgba(0,0,0,0.4)]"
+            style={{ transform: `rotate(${page ? 6 : -5}deg)` }}
+          >
+            {[1, 0.7, 0.9, 0.55].map((w, line) => (
+              <span
+                key={line}
+                className="draft-line h-px rounded-full bg-plum/60"
+                style={{ width: `${w * 100}%`, animationDelay: `${page * 2.4 + line * 0.5}s` }}
+              />
+            ))}
+            <span className="draft-pencil absolute -right-1.5 top-0 text-[9px] leading-none" style={{ animationDelay: `${page * 2.4}s` }}>
+              ✎
+            </span>
+            {/* little sparkles drifting off the pencil as it writes */}
+            {[0, 1, 2].map((sp) => (
+              <span
+                key={sp}
+                className="draft-spark absolute -right-2 top-2 text-[6px] leading-none text-pink"
+                style={{ animationDelay: `${page * 2.4 + 0.4 + sp * 0.55}s` }}
+              >
+                ✦
+              </span>
+            ))}
+          </span>
+          </span>
+        ))}
+      </span>
+    );
+  }
   if (kind === "people") {
     // one dot per participant, lighting up in turn
     return (

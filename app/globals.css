@@ -796,6 +796,54 @@ a[href] {
   to { transform: translateY(110vh) rotate(200deg); opacity: 0; }
 }
 
+/* "papers in progress" stat: lines write themselves in, a tiny pencil scribbles down the page */
+.draft-line {
+  transform-origin: left;
+  animation: draft-line 4.8s ease-out infinite;
+}
+@keyframes draft-line {
+  0% { transform: scaleX(0); }
+  10%, 88% { transform: scaleX(1); }
+  100% { transform: scaleX(0); }
+}
+.draft-pencil {
+  color: var(--pink);
+  opacity: 0;
+  animation: draft-pencil 4.8s ease-in-out infinite;
+}
+/* each page lifts toward you and tilts while it's being written, then settles; a soft bob otherwise */
+.draft-page {
+  display: block;
+  animation: draft-page 4.8s ease-in-out infinite;
+}
+@keyframes draft-page {
+  0%, 100% { transform: translateY(0) rotate(0deg) scale(1); }
+  8% { transform: translateY(-4px) rotate(-3deg) scale(1.1); }
+  20% { transform: translateY(-3px) rotate(2deg) scale(1.1); }
+  32% { transform: translateY(-4px) rotate(-2deg) scale(1.1); }
+  46% { transform: translateY(0) rotate(0deg) scale(1); }
+  70% { transform: translateY(-1.5px) rotate(0deg) scale(1); }
+}
+.draft-spark {
+  opacity: 0;
+  animation: draft-spark 4.8s ease-out infinite;
+}
+@keyframes draft-spark {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  4% { opacity: 1; }
+  16% { opacity: 0; transform: translate(5px, -9px) scale(1.1) rotate(90deg); }
+  100% { opacity: 0; }
+}
+@keyframes draft-pencil {
+  0% { opacity: 0; transform: translate(-10px, 0) rotate(-8deg); }
+  5% { opacity: 1; }
+  10% { transform: translate(-2px, 1px) rotate(6deg); }
+  20% { transform: translate(-10px, 6px) rotate(-8deg); }
+  30% { transform: translate(-2px, 11px) rotate(6deg); }
+  40% { transform: translate(-10px, 16px) rotate(-8deg); opacity: 1; }
+  48%, 100% { opacity: 0; transform: translate(-6px, 18px) rotate(0deg); }
+}
+
 /* the skills composition bar grows in from the left */
 .grow-x {
   transform-origin: left;
@@ -877,6 +925,17 @@ a[href] {
     animation: none;
   }
   .pip {
+    animation: none;
+    opacity: 1;
+  }
+  .draft-line,
+  .draft-page {
+    animation: none;
+  }
+  .draft-spark {
+    display: none;
+  }
+  .draft-pencil {
     animation: none;
     opacity: 1;
   }
